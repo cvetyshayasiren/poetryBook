@@ -4,21 +4,23 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.cvetyshayasiren.poetrybook.data.CommonRepositoryImpl
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -58,10 +60,50 @@ fun App() {
 }
 
 @Composable
+fun TestSettings() {
+    val repo = remember { CommonRepositoryImpl() }
+    val loaded = remember { mutableStateOf(repo.loadTest()) }
+    Column(
+        modifier = Modifier.fillMaxWidth(.8f)
+    ) {
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
+        ) {
+            repeat(10) {
+                Button(
+                    onClick = {
+                        repo.saveTest("test save with $it")
+                    }
+                ) {
+                    Text("save $it")
+                }
+            }
+        }
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
+    ) {
+        Button(
+            onClick = {
+                loaded.value = repo.loadTest()
+            }
+        ) {
+            Text("load")
+        }
+        Text("loaded: ${loaded.value}")
+    }
+}
+
+
+@Composable
 fun DataTest() {
     val scope = rememberCoroutineScope()
     val data = remember { mutableStateOf(CommonRepositoryImpl().getDefault()) }
 
+    TestSettings()
     Button(
         onClick = {
             scope.launch {

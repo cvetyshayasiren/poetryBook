@@ -31,7 +31,7 @@ androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "settings" }
+settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "settings" }
 serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
 [plugins]
