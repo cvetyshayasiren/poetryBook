@@ -21,7 +21,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.cvetyshayasiren.poetrybook.data.CommonRepositoryImpl
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -52,94 +51,6 @@ fun App() {
                 ) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text("Compose: $greeting")
-                }
-            }
-            DataTest()
-        }
-    }
-}
-
-@Composable
-fun TestSettings() {
-    val repo = remember { CommonRepositoryImpl() }
-    val loaded = remember { mutableStateOf(repo.loadTest()) }
-    Column(
-        modifier = Modifier.fillMaxWidth(.8f)
-    ) {
-        Row(
-            modifier = Modifier.horizontalScroll(rememberScrollState()),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
-        ) {
-            repeat(10) {
-                Button(
-                    onClick = {
-                        repo.saveTest("test save with $it")
-                    }
-                ) {
-                    Text("save $it")
-                }
-            }
-        }
-    }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
-    ) {
-        Button(
-            onClick = {
-                loaded.value = repo.loadTest()
-            }
-        ) {
-            Text("load")
-        }
-        Text("loaded: ${loaded.value}")
-    }
-}
-
-
-@Composable
-fun DataTest() {
-    val scope = rememberCoroutineScope()
-    val data = remember { mutableStateOf(CommonRepositoryImpl().getDefault()) }
-
-    TestSettings()
-    Button(
-        onClick = {
-            scope.launch {
-                data.value = CommonRepositoryImpl().getData()
-            }
-        }
-    ) {
-        Text("get DATA")
-    }
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth(.8f),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start
-    ) {
-        item { Text("POETS ${data.value.size}") }
-        items(items = data.value) {poet ->
-            var expanded by remember { mutableStateOf(false) }
-            Text(
-                modifier = Modifier.clickable { expanded=!expanded },
-                text = poet.name,
-                color = MaterialTheme.colorScheme.primary
-            )
-            if(expanded) {
-                poet.poems.forEach { poem ->
-                    var expandedText by remember { mutableStateOf(false) }
-                    Text(
-                        modifier = Modifier.clickable { expandedText=!expandedText },
-                        text = poem.title,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                    if(expandedText) {
-                        Text(
-                            text = poem.text,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
                 }
             }
         }

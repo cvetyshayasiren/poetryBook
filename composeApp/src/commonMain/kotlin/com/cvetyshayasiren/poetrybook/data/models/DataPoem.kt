@@ -1,5 +1,7 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
+import com.cvetyshayasiren.poetrybook.domain.Poem
+import com.cvetyshayasiren.poetrybook.domain.Poems
 import kotlinx.serialization.Serializable
 
 typealias DataPoems = List<DataPoem>
@@ -13,3 +15,14 @@ data class DataPoem(
     val title: String,
     val text: String
 )
+
+fun DataPoem.toPoem(): Poem = Poem(
+    id = this.id,
+    poetId = this.poetId,
+    lastPoemId = this.lastPoemId,
+    poetName = this.poetName,
+    title = this.title,
+    text = this.text
+)
+
+fun DataPoems.toPoems(): Poems = this.map { it.toPoem() }
