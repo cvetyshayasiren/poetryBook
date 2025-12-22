@@ -1,5 +1,10 @@
 package com.cvetyshayasiren.poetrybook.domain
 
-enum class IsmStyle {
-    NEU, BRUT, BAU, GLASS
+import com.cvetyshayasiren.poetrybook.domain.utils.PrettyLabel
+
+enum class IsmStyle(val label: PrettyLabel) {
+    NEU(PrettyLabel("neumorphism", "неоморфизм")),
+    BRUT(PrettyLabel("brutalism", "брутализм")),
+    BAU(PrettyLabel("bauhaus", "баухаус")),
+    GLASS(PrettyLabel("glassmorphism", "глассморфизм"))
 }

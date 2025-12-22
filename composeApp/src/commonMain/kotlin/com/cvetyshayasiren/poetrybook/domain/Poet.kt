@@ -1,10 +1,12 @@
 package com.cvetyshayasiren.poetrybook.domain
 
-typealias Poets = List<Poet>
-
 data class Poet(
     val id: Int,
     val lastPoemId: Int,
     val name: String,
     val poems: Poems
 )
+
+typealias Poets = List<Poet>
+
+fun Poets.getPoem(bookmark: PoemBookmark): Poem = this[bookmark.poetId()].poems[bookmark.poemId()]

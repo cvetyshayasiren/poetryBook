@@ -1,6 +1,6 @@
 package com.cvetyshayasiren.poetrybook.domain
 
-typealias Poems = List<Poem>
+import kotlin.jvm.JvmInline
 
 data class Poem(
     val id: Int,
@@ -10,7 +10,21 @@ data class Poem(
     val title: String,
     val text: String
 ) {
-    fun nextPoem(): Poem = TODO()
+    fun nextPoemBookmark(): PoemBookmark =
+        PoemBookmark.fromIds(poetId = poetId, poemId = (id + 1) % lastPoemId)
 
-    fun previousPoem(): Poem = TODO()
+    fun previousPoemBookmark(): PoemBookmark =
+        PoemBookmark.fromIds(poetId = poetId, poemId = (lastPoemId + id - 1) % lastPoemId)
+}
+
+typealias Poems = List<Poem>
+
+@JvmInline
+value class PoemBookmark(val value: Pair<Int, Int>) {
+    fun poetId() = value.first
+    fun poemId() = value.second
+
+    companion object {
+        fun fromIds(poetId: Int, poemId: Int): PoemBookmark = PoemBookmark(value = Pair(poetId, poemId))
+    }
 }

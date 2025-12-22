@@ -48,6 +48,8 @@ kotlin {
             implementation(libs.materialKolor)
             implementation(libs.settings)
             implementation(libs.serialization.json)
+            implementation(libs.bundles.navigation)
+            implementation(compose.materialIconsExtended)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

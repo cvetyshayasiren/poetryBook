@@ -4,10 +4,7 @@ import com.cvetyshayasiren.poetrybook.data.models.DataPoemsSequence
 import com.cvetyshayasiren.poetrybook.data.models.DataPoets
 import com.cvetyshayasiren.poetrybook.data.models.DataRandomState
 import com.cvetyshayasiren.poetrybook.data.models.DataStyleState
-import com.cvetyshayasiren.poetrybook.data.models.toPoemSequence
 import com.cvetyshayasiren.poetrybook.data.models.toPoets
-import com.cvetyshayasiren.poetrybook.data.models.toRandomState
-import com.cvetyshayasiren.poetrybook.data.models.toStyleState
 import com.cvetyshayasiren.poetrybook.domain.PoemsSequence
 import com.cvetyshayasiren.poetrybook.domain.Poets
 import com.cvetyshayasiren.poetrybook.domain.RandomState
