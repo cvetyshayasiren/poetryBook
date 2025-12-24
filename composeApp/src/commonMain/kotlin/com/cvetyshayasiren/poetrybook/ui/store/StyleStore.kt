@@ -9,8 +9,8 @@ import com.cvetyshayasiren.poetrybook.domain.IsmStyle
 import com.cvetyshayasiren.poetrybook.domain.StyleState
 import com.cvetyshayasiren.poetrybook.domain.ThemeMode
 import com.cvetyshayasiren.poetrybook.domain.repository.StyleStateRepository
-import com.cvetyshayasiren.poetrybook.ui.store.utils.Intent
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
+import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,27 +20,34 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 typealias StyleStoreState = StyleState
-sealed interface StyleStoreIntent: Intent {
+sealed interface StyleStoreIntent {
     class SetIsmStyle(val ismStyle: IsmStyle): StyleStoreIntent
     class SetSeedColor(val seedColor: Color): StyleStoreIntent
     class SetThemeMode(val themeMode: ThemeMode): StyleStoreIntent
 }
 
-class StyleStoreReducer: Reducer<StyleStoreState, StyleStoreIntent> {
+sealed interface StyleStoreEffect
 
-    override fun reduce(state: StyleStoreState, intent: StyleStoreIntent): StyleStoreState {
-        return when(intent) {
-            is StyleStoreIntent.SetIsmStyle -> state.copy(ismStyle = intent.ismStyle)
-            is StyleStoreIntent.SetSeedColor -> state.copy(seedColor = intent.seedColor)
-            is StyleStoreIntent.SetThemeMode -> state.copy(themeMode = intent.themeMode)
-        }
+class StyleStoreReducer(
+    val repository: StyleStateRepository
+): Reducer<StyleStoreState, StyleStoreIntent, StyleStoreEffect> {
+
+    override suspend fun reduce(state: StyleStoreState, intent: StyleStoreIntent):
+            ReducerResult<StyleStoreState, out StyleStoreEffect?> {
+        return ReducerResult.build(
+            state = when(intent) {
+                is StyleStoreIntent.SetIsmStyle -> state.copy(ismStyle = intent.ismStyle)
+                is StyleStoreIntent.SetSeedColor -> state.copy(seedColor = intent.seedColor)
+                is StyleStoreIntent.SetThemeMode -> state.copy(themeMode = intent.themeMode)
+            }.also { repository.saveStyleState(it) }
+        )
     }
-
 }
 
 class StyleStore(
     repository: StyleStateRepository
-): Store<StyleStoreState, StyleStoreIntent>(
+): Store<StyleStoreState, StyleStoreIntent, StyleStoreEffect>(
+    defaultState = StyleStoreState(),
     initialiseState = { repository.getStyleState() },
-    reducer = StyleStoreReducer()
+    reducer = StyleStoreReducer(repository = repository)
 )
