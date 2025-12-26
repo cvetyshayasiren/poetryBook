@@ -4,14 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.cvetyshayasiren.poetrybook.domain.IsmStyle
-import com.cvetyshayasiren.poetrybook.ui.navigation.Destinations
+import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
+import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism.PlugScreenBundle
 
 interface StyleScreenBundle {
     @Composable
     fun NavigationView(
         modifier: Modifier = Modifier,
-        backStack: SnapshotStateList<Destinations>,
         isExpanded: Boolean
     )
 

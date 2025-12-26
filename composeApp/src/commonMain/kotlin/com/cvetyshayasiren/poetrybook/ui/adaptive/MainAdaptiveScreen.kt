@@ -19,6 +19,8 @@ import androidx.window.core.layout.WindowSizeClass
 import com.cvetyshayasiren.poetrybook.domain.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.navigation.MainNavigationScreen
 import com.cvetyshayasiren.poetrybook.ui.navigation.isExpanded
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
+import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.styles.getStyleScreenBundle
 
 @Composable

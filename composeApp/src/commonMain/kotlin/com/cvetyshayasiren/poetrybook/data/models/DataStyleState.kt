@@ -48,17 +48,19 @@ enum class DataIsmStyle {
 }
 
 enum class DataThemeMode {
-    DARK, LIGHT;
+    DARK, LIGHT, SYSTEM;
 
     fun toThemeMode(): ThemeMode = when(this) {
         DARK -> ThemeMode.DARK
         LIGHT -> ThemeMode.LIGHT
+        SYSTEM -> ThemeMode.SYSTEM
     }
 
     companion object {
         fun fromThemeMode(mode: ThemeMode): DataThemeMode = when(mode) {
             ThemeMode.DARK -> DARK
             ThemeMode.LIGHT -> LIGHT
+            ThemeMode.SYSTEM -> SYSTEM
         }
     }
 }

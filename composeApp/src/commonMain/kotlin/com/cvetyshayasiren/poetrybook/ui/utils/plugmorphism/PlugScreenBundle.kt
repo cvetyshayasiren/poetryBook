@@ -4,16 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.cvetyshayasiren.poetrybook.domain.IsmStyle
-import com.cvetyshayasiren.poetrybook.ui.navigation.Destinations
+import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
+import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 
 class PlugScreenBundle(val style: IsmStyle): StyleScreenBundle {
     @Composable
     override fun NavigationView(
         modifier: Modifier,
-        backStack: SnapshotStateList<Destinations>,
         isExpanded: Boolean
-    ) = PlugNavigationView(backStack = backStack, modifier, isExpanded, style)
+    ) = PlugNavigationView(modifier, isExpanded, style)
 
     @Composable
     override fun BookPane(modifier: Modifier) = PlugBookPane(modifier, style)

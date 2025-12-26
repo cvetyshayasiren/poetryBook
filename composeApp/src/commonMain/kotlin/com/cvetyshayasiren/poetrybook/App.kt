@@ -21,13 +21,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.cvetyshayasiren.poetrybook.data.repository.StyleStateRepositoryImplementation
 import com.cvetyshayasiren.poetrybook.domain.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.adaptive.MainAdaptiveScreen
 import com.cvetyshayasiren.poetrybook.ui.navigation.MainNavigationScreen
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStoreState
+import com.cvetyshayasiren.poetrybook.ui.theme.PoetryBookTheme
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -38,7 +41,7 @@ import poetrybook.composeapp.generated.resources.compose_multiplatform
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    PoetryBookTheme {
         MainAdaptiveScreen()
     }
 }

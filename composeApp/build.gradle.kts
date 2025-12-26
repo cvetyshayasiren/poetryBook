@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.serialization.json)
             implementation(libs.bundles.navigation)
             implementation(compose.materialIconsExtended)
+            implementation(libs.kermit)
+            implementation(libs.kodein)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

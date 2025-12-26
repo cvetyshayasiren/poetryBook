@@ -33,15 +33,13 @@ class StyleStoreReducer(
 ): Reducer<StyleStoreState, StyleStoreIntent, StyleStoreEffect> {
 
     override suspend fun reduce(state: StyleStoreState, intent: StyleStoreIntent):
-            ReducerResult<StyleStoreState, out StyleStoreEffect?> {
-        return ReducerResult.build(
-            state = when(intent) {
-                is StyleStoreIntent.SetIsmStyle -> state.copy(ismStyle = intent.ismStyle)
-                is StyleStoreIntent.SetSeedColor -> state.copy(seedColor = intent.seedColor)
-                is StyleStoreIntent.SetThemeMode -> state.copy(themeMode = intent.themeMode)
-            }.also { repository.saveStyleState(it) }
-        )
-    }
+            ReducerResult<StyleStoreState, out StyleStoreEffect?> = ReducerResult.build(
+        state = when(intent) {
+            is StyleStoreIntent.SetIsmStyle -> state.copy(ismStyle = intent.ismStyle)
+            is StyleStoreIntent.SetSeedColor -> state.copy(seedColor = intent.seedColor)
+            is StyleStoreIntent.SetThemeMode -> state.copy(themeMode = intent.themeMode)
+        }.also { repository.saveStyleState(it) }
+    )
 }
 
 class StyleStore(
@@ -49,5 +47,6 @@ class StyleStore(
 ): Store<StyleStoreState, StyleStoreIntent, StyleStoreEffect>(
     defaultState = StyleStoreState(),
     initialiseState = { repository.getStyleState() },
-    reducer = StyleStoreReducer(repository = repository)
+    reducer = StyleStoreReducer(repository = repository),
+    tag = "StyleStore"
 )

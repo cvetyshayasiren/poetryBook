@@ -6,24 +6,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.IsmStyle
-import com.cvetyshayasiren.poetrybook.ui.navigation.Destinations
+import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
+import org.kodein.di.instance
+import org.kodein.di.newInstance
 
 @Composable
 fun PlugNavigationView(
-    backStack: SnapshotStateList<Destinations>,
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
     style: IsmStyle,
 ) {
-    val navList = Destinations.navList(isExpanded)
+    val navigationStore: NavigationStore by di.instance()
+    val navList = Destination.navList(isExpanded)
     Row(
         modifier = modifier
     ) {
         navList.forEach {
             Button(
                 onClick = {
-                    backStack.add(it)
+                    navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(it))
                 }
             ) {
                 Text(it::class.simpleName ?: "???")
