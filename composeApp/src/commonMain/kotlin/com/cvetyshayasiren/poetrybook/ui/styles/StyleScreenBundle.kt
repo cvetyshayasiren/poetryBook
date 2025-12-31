@@ -1,12 +1,8 @@
 package com.cvetyshayasiren.poetrybook.ui.styles
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import com.cvetyshayasiren.poetrybook.domain.IsmStyle
-import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
-import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
-import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
+import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism.PlugScreenBundle
 
 interface StyleScreenBundle {
@@ -17,7 +13,7 @@ interface StyleScreenBundle {
     )
 
     @Composable
-    fun BookPane(modifier: Modifier = Modifier)
+    fun PagePane(modifier: Modifier = Modifier)
 
     @Composable
     fun SettingsPane(modifier: Modifier = Modifier)

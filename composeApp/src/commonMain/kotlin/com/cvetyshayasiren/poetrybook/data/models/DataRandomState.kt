@@ -1,25 +1,25 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
-import com.cvetyshayasiren.poetrybook.domain.NextPoemBehaviour
-import com.cvetyshayasiren.poetrybook.domain.RandomState
+import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
+import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class DataRandomState(
-    val nextPoemBehaviour: DataNextPoemBehaviour,
+    val randomPoemBehaviour: DataRandomPoemBehaviour,
     val isRandomiseSeed: Boolean,
     val isRandomiseIsm: Boolean,
     val isRandomiseThemeMode: Boolean,
 ) {
     fun toRandomState() = RandomState(
-        nextPoemBehaviour = this.nextPoemBehaviour.toNextPoemBehaviour(),
+        randomPoemBehaviour = this.randomPoemBehaviour.toRandomPoemBehaviour(),
         isRandomiseSeed = this.isRandomiseSeed,
         isRandomiseIsm = this.isRandomiseIsm,
         isRandomiseThemeMode = this.isRandomiseThemeMode
     )
     companion object {
         fun fromRandomState(state: RandomState): DataRandomState = DataRandomState(
-            nextPoemBehaviour = DataNextPoemBehaviour.fromNextPoemBehaviour(state.nextPoemBehaviour),
+            randomPoemBehaviour = DataRandomPoemBehaviour.fromRandomPoemBehaviour(state.randomPoemBehaviour),
             isRandomiseSeed = state.isRandomiseSeed,
             isRandomiseIsm = state.isRandomiseIsm,
             isRandomiseThemeMode = state.isRandomiseThemeMode
@@ -28,21 +28,21 @@ data class DataRandomState(
 }
 
 @Serializable
-enum class DataNextPoemBehaviour() {
+enum class DataRandomPoemBehaviour() {
     SAME_POET, RANDOM_POET, CERTAIN_POET, FROM_FAVORITES;
 
-    fun toNextPoemBehaviour(): NextPoemBehaviour = when(this) {
-        SAME_POET -> NextPoemBehaviour.SAME_POET
-        RANDOM_POET -> NextPoemBehaviour.RANDOM_POET
-        CERTAIN_POET -> NextPoemBehaviour.CERTAIN_POET
-        FROM_FAVORITES -> NextPoemBehaviour.FROM_FAVORITES
+    fun toRandomPoemBehaviour(): RandomPoemBehaviour = when(this) {
+        SAME_POET -> RandomPoemBehaviour.SAME_POET
+        RANDOM_POET -> RandomPoemBehaviour.RANDOM_POET
+        CERTAIN_POET -> RandomPoemBehaviour.CERTAIN_POET
+        FROM_FAVORITES -> RandomPoemBehaviour.FROM_FAVORITES
     }
     companion object {
-        fun fromNextPoemBehaviour(behaviour: NextPoemBehaviour): DataNextPoemBehaviour = when(behaviour) {
-            NextPoemBehaviour.SAME_POET -> SAME_POET
-            NextPoemBehaviour.RANDOM_POET -> RANDOM_POET
-            NextPoemBehaviour.CERTAIN_POET -> CERTAIN_POET
-            NextPoemBehaviour.FROM_FAVORITES -> FROM_FAVORITES
+        fun fromRandomPoemBehaviour(behaviour: RandomPoemBehaviour): DataRandomPoemBehaviour = when(behaviour) {
+            RandomPoemBehaviour.SAME_POET -> SAME_POET
+            RandomPoemBehaviour.RANDOM_POET -> RANDOM_POET
+            RandomPoemBehaviour.CERTAIN_POET -> CERTAIN_POET
+            RandomPoemBehaviour.FROM_FAVORITES -> FROM_FAVORITES
         }
     }
 }

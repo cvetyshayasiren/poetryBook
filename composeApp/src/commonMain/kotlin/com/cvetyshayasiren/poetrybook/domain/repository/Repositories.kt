@@ -1,9 +1,10 @@
 package com.cvetyshayasiren.poetrybook.domain.repository
 
-import com.cvetyshayasiren.poetrybook.domain.PoemsSequence
-import com.cvetyshayasiren.poetrybook.domain.Poets
-import com.cvetyshayasiren.poetrybook.domain.RandomState
-import com.cvetyshayasiren.poetrybook.domain.StyleState
+import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemsSequence
+import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
+import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetsSequence
+import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
+import com.cvetyshayasiren.poetrybook.domain.models.style.StyleState
 
 interface PoetryBookRepository {
     suspend fun getBook(): Poets
@@ -20,12 +21,12 @@ interface RandomStateRepository {
 }
 
 interface FavoritesRepository {
-    fun getFavorites(): PoemsSequence
-    fun saveFavorites(favorites: PoemsSequence)
+    fun getFavorites(): PoetsSequence
+    fun saveFavorites(favorites: PoetsSequence)
 }
 
 interface HistoryRepository {
-    fun getHistory(): PoemsSequence
-    fun saveHistory(history: PoemsSequence)
+    fun getHistory(): PoetsSequence
+    fun saveHistory(history: PoetsSequence)
 }
 

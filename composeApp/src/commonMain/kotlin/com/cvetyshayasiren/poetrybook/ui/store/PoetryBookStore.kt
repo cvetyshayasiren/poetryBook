@@ -1,6 +1,6 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import com.cvetyshayasiren.poetrybook.domain.Poets
+import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
 import com.cvetyshayasiren.poetrybook.domain.repository.PoetryBookRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
@@ -23,8 +23,8 @@ class PoetryBookReducer(
     override suspend fun reduce(
         state: PoetryBookState,
         intent: PoetryBookIntent
-    ): ReducerResult<PoetryBookState, out PoetryBookEffect?> {
-        return ReducerResult.build(
+    ): ReducerResult<PoetryBookState, out PoetryBookEffect?> = when(intent) {
+        is PoetryBookIntent.LoadBook -> ReducerResult.build(
             state = PoetryBookState.Prepared(book = repository.getBook())
         )
     }
@@ -35,5 +35,6 @@ class PoetryBookStore(
 ): Store<PoetryBookState, PoetryBookIntent, PoetryBookEffect>(
     defaultState = PoetryBookState.Loading,
     initialiseState = { PoetryBookState.Prepared(book = repository.getBook()) },
-    reducer = PoetryBookReducer(repository = repository)
+    reducer = PoetryBookReducer(repository = repository),
+    tag = "PoetryBookStore"
 )

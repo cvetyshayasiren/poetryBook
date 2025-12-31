@@ -2,9 +2,9 @@ package com.cvetyshayasiren.poetrybook.data.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.cvetyshayasiren.poetrybook.domain.IsmStyle
-import com.cvetyshayasiren.poetrybook.domain.StyleState
-import com.cvetyshayasiren.poetrybook.domain.ThemeMode
+import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
+import com.cvetyshayasiren.poetrybook.domain.models.style.StyleState
+import com.cvetyshayasiren.poetrybook.domain.models.style.ThemeMode
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -19,10 +19,8 @@ import androidx.navigation3.ui.NavDisplay
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
-import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 import org.kodein.di.instance
-import org.kodein.di.newInstance
 
 @Composable
 fun MainNavigationScreen(
@@ -40,7 +38,7 @@ fun MainNavigationScreen(
             onBack = { navigationStore.sendIntent(NavigationStoreIntent.Back) },
             entryProvider =  { key ->
                 when(key) {
-                    Destination.Book -> NavEntry(key) { styleScreenBundle.BookPane() }
+                    Destination.Page -> NavEntry(key) { styleScreenBundle.PagePane() }
                     Destination.Favorites -> NavEntry(key) { styleScreenBundle.FavoritesPane() }
                     Destination.History -> NavEntry(key) { styleScreenBundle.HistoryPane() }
                     Destination.Search -> NavEntry(key) { styleScreenBundle.SearchPane() }
@@ -54,7 +52,7 @@ fun MainNavigationScreen(
                 .fillMaxWidth(.8f)
                 .wrapContentHeight()
                 .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.tertiaryFixedDim)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .align(Alignment.BottomCenter),
             isExpanded = isExpanded
         )

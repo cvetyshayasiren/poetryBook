@@ -1,14 +1,15 @@
 package com.cvetyshayasiren.poetrybook.data.repository
 
-import com.cvetyshayasiren.poetrybook.data.models.DataPoemsSequence
+import com.cvetyshayasiren.poetrybook.data.models.DataPoetsSequence
 import com.cvetyshayasiren.poetrybook.data.models.DataPoets
 import com.cvetyshayasiren.poetrybook.data.models.DataRandomState
 import com.cvetyshayasiren.poetrybook.data.models.DataStyleState
 import com.cvetyshayasiren.poetrybook.data.models.toPoets
-import com.cvetyshayasiren.poetrybook.domain.PoemsSequence
-import com.cvetyshayasiren.poetrybook.domain.Poets
-import com.cvetyshayasiren.poetrybook.domain.RandomState
-import com.cvetyshayasiren.poetrybook.domain.StyleState
+import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemsSequence
+import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
+import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetsSequence
+import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
+import com.cvetyshayasiren.poetrybook.domain.models.style.StyleState
 import com.cvetyshayasiren.poetrybook.domain.repository.FavoritesRepository
 import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
 import com.cvetyshayasiren.poetrybook.domain.repository.PoetryBookRepository
@@ -71,19 +72,19 @@ class FavoritesRepositoryImplementation(): FavoritesRepository {
     private val settings = Settings()
     private val key = "favorites"
     private val default =
-        Json.encodeToString<DataPoemsSequence>(DataPoemsSequence.fromPoemSequence(PoemsSequence()))
+        Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(PoetsSequence()))
 
-    override fun getFavorites(): PoemsSequence = Json.decodeFromString<DataPoemsSequence>(
+    override fun getFavorites(): PoetsSequence = Json.decodeFromString<DataPoetsSequence>(
         string = settings.getString(
             key = key,
             defaultValue = default
         )
-    ).toPoemSequence()
+    ).toPoetsSequence()
 
-    override fun saveFavorites(favorites: PoemsSequence) {
+    override fun saveFavorites(favorites: PoetsSequence) {
         settings.putString(
             key = key,
-            value = Json.encodeToString<DataPoemsSequence>(DataPoemsSequence.fromPoemSequence(favorites))
+            value = Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(favorites))
         )
     }
 }
@@ -92,19 +93,19 @@ class HistoryRepositoryImplementation(): HistoryRepository {
     private val settings = Settings()
     private val key = "history"
     private val default =
-        Json.encodeToString<DataPoemsSequence>(DataPoemsSequence.fromPoemSequence(PoemsSequence()))
+        Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(PoetsSequence()))
 
-    override fun getHistory(): PoemsSequence = Json.decodeFromString<DataPoemsSequence>(
+    override fun getHistory(): PoetsSequence = Json.decodeFromString<DataPoetsSequence>(
         string = settings.getString(
             key = key,
             defaultValue = default
         )
-    ).toPoemSequence()
+    ).toPoetsSequence()
 
-    override fun saveHistory(history: PoemsSequence) {
+    override fun saveHistory(history: PoetsSequence) {
         settings.putString(
             key = key,
-            value = Json.encodeToString<DataPoemsSequence>(DataPoemsSequence.fromPoemSequence(history))
+            value = Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(history))
         )
     }
 }

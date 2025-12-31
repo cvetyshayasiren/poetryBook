@@ -53,7 +53,7 @@ abstract class Store<S, I, E>(
             val (newState, effect) = reducer.reduce(_state.value, intent).value
             _state.emit(newState)
             effect?.let { _effect.emit(it) }
-            Logger.i(tag) { "intent [$intentName] send" }
+            Logger.i(tag) { "send intent [$intentName]" }
         }
     }
 }

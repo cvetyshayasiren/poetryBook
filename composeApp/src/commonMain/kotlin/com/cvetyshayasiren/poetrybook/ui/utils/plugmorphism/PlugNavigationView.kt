@@ -4,15 +4,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.IsmStyle
+import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
 import org.kodein.di.instance
-import org.kodein.di.newInstance
 
 @Composable
 fun PlugNavigationView(

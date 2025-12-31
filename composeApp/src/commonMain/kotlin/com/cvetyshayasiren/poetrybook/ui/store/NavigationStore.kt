@@ -7,7 +7,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 
 data class NavigationStoreState(
-    val backstack: Destinations = listOf(Destination.Book)
+    val backstack: Destinations = listOf(Destination.Page)
 )
 
 sealed interface NavigationStoreIntent {
