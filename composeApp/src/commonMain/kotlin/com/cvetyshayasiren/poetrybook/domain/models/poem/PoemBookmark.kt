@@ -1,8 +1,6 @@
 package com.cvetyshayasiren.poetrybook.domain.models.poem
 
 import kotlinx.datetime.LocalDateTime
-import kotlin.jvm.JvmInline
-import kotlin.time.TimeMark
 
 interface PoemBookmark {
     val poetId: Int

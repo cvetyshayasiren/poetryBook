@@ -1,7 +1,5 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
-import com.cvetyshayasiren.poetrybook.domain.models.poem.BasicPoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemsSequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetsSequence
 import kotlinx.serialization.Serializable

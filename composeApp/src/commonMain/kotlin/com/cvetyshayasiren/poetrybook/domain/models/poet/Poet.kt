@@ -1,7 +1,6 @@
 package com.cvetyshayasiren.poetrybook.domain.models.poet
 
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
-import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poems
 import com.cvetyshayasiren.poetrybook.domain.utils.random
 

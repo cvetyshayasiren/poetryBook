@@ -1,7 +1,5 @@
 package com.cvetyshayasiren.poetrybook.domain.utils
 
-import androidx.compose.ui.text.capitalize
-
 data class PrettyLabel(
     val labelEn: String,
     val labelRu: String

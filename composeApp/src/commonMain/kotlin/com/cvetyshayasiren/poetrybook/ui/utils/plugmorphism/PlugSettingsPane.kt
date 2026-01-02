@@ -13,7 +13,6 @@ import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStoreIntent
 import org.kodein.di.instance
-import kotlin.getValue
 
 @Composable
 fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
