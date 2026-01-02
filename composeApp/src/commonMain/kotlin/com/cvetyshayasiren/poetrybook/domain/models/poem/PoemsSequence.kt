@@ -9,9 +9,5 @@ import kotlin.random.Random
 value class PoemsSequence(val value: List<Int> = listOf()) {
 
     fun random(exclude: Int): Int = value.random(exclude = exclude)
-
-    companion object {
-        val DEFAULT: PoemsSequence = PoemsSequence(value = listOf())
-    }
 }
 

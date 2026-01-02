@@ -52,6 +52,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.kermit)
             implementation(libs.kodein)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

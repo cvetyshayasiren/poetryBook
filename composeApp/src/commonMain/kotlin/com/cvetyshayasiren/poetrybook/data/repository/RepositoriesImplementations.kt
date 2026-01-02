@@ -1,10 +1,17 @@
 package com.cvetyshayasiren.poetrybook.data.repository
 
+import com.cvetyshayasiren.poetrybook.data.models.DataDatedPoemBookmark
+import com.cvetyshayasiren.poetrybook.data.models.DataDatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.data.models.DataPoemsSequence
 import com.cvetyshayasiren.poetrybook.data.models.DataPoetsSequence
 import com.cvetyshayasiren.poetrybook.data.models.DataPoets
 import com.cvetyshayasiren.poetrybook.data.models.DataRandomState
 import com.cvetyshayasiren.poetrybook.data.models.DataStyleState
+import com.cvetyshayasiren.poetrybook.data.models.fromDatedPoetBookmarks
+import com.cvetyshayasiren.poetrybook.data.models.toDatedPoemBookmarks
 import com.cvetyshayasiren.poetrybook.data.models.toPoets
+import com.cvetyshayasiren.poetrybook.domain.models.poem.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemsSequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
 import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetsSequence
@@ -93,19 +100,19 @@ class HistoryRepositoryImplementation(): HistoryRepository {
     private val settings = Settings()
     private val key = "history"
     private val default =
-        Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(PoetsSequence()))
+        Json.encodeToString<DataDatedPoemBookmarks>(listOf())
 
-    override fun getHistory(): PoetsSequence = Json.decodeFromString<DataPoetsSequence>(
+    override fun getHistory(): DatedPoemBookmarks = Json.decodeFromString<DataDatedPoemBookmarks>(
         string = settings.getString(
             key = key,
             defaultValue = default
         )
-    ).toPoetsSequence()
+    ).toDatedPoemBookmarks()
 
-    override fun saveHistory(history: PoetsSequence) {
+    override fun saveHistory(history: DatedPoemBookmarks) {
         settings.putString(
             key = key,
-            value = Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(history))
+            value = Json.encodeToString<DataDatedPoemBookmarks>(fromDatedPoetBookmarks(history))
         )
     }
 }

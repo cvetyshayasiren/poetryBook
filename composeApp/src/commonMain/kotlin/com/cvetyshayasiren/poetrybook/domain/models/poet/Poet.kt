@@ -3,6 +3,7 @@ package com.cvetyshayasiren.poetrybook.domain.models.poet
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
 import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poems
+import com.cvetyshayasiren.poetrybook.domain.utils.random
 
 data class Poet(
     val id: Int,
@@ -10,11 +11,6 @@ data class Poet(
     val poems: Poems
 )
 
-fun Poet.randomPoem(exclude: Poem): Poem {
-    if(poems.size == 1) { return exclude }
-    val candidate = poems.random()
-    if (candidate == exclude) { randomPoem(exclude) }
-    return candidate
-}
+fun Poet.randomPoem(exclude: Poem): Poem = poems.random(exclude = exclude)
 
 

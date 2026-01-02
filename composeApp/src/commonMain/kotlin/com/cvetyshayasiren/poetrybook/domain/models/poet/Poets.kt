@@ -5,4 +5,4 @@ import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 
 typealias Poets = List<Poet>
 
-fun Poets.getPoem(bookmark: PoemBookmark): Poem = this[bookmark.poetId()].poems[bookmark.poemId()]
+fun Poets.getPoem(bookmark: PoemBookmark): Poem = this[bookmark.poetId].poems[bookmark.poemId]

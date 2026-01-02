@@ -1,5 +1,7 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
+import com.cvetyshayasiren.poetrybook.domain.models.poem.BasicPoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemsSequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetsSequence
 import kotlinx.serialization.Serializable
@@ -10,9 +12,10 @@ import kotlin.math.abs
 @JvmInline
 value class DataPoetsSequence(val value: Map<Int, DataPoemsSequence>) {
     fun toPoetsSequence(): PoetsSequence = PoetsSequence(value = value.mapValues { it.value.toPoemsSequence() })
+
     companion object {
         fun fromPoetSequence(value: PoetsSequence): DataPoetsSequence = DataPoetsSequence(
-            value = value.value.mapValues { DataPoemsSequence.fromPoemsSequence(it.value) }
+            value = value.value.mapValues { DataPoemsSequence.fromPoemsSequence(it.value) }.toMutableMap()
         )
     }
 }
