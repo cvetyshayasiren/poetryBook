@@ -1,5 +1,10 @@
 package com.cvetyshayasiren.poetrybook.domain.models.random
 
-enum class RandomPoemBehaviour() {
-    SAME_POET, RANDOM_POET, CERTAIN_POET, FROM_FAVORITES
+sealed interface RandomPoemBehaviour {
+    data object SamePoet: RandomPoemBehaviour
+    data object RandomPoet: RandomPoemBehaviour
+
+    data class CertainPoet(val poetId: Int): RandomPoemBehaviour
+
+    data object FromFavorites: RandomPoemBehaviour
 }

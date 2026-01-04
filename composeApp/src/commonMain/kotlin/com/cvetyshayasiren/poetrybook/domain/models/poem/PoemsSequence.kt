@@ -6,6 +6,6 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class PoemsSequence(val value: List<Int> = listOf()) {
 
-    fun random(exclude: Int): Int = value.random(exclude = exclude)
+    fun random(exclude: Int? = null): Int = value.random(exclude = exclude)
 }
 

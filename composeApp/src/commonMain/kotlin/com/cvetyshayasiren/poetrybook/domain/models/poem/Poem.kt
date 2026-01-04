@@ -7,9 +7,11 @@ data class Poem(
     val title: String,
     val text: String
 ) {
-//    fun nextPoemBookmark(): PoemBookmark =
-//        PoemBookmark.fromIds(poetId = poetId, poemId = (id + 1) % lastPoemId)
-//
-//    fun previousPoemBookmark(): PoemBookmark =
-//        PoemBookmark.fromIds(poetId = poetId, poemId = (lastPoemId + id - 1) % lastPoemId)
+    fun toBasicPoemBookmark(): BasicPoemBookmark = BasicPoemBookmark(poetId = poetId, poemId = id)
+    fun toTitledPoemBookmark(): TitledPoemBookmark = TitledPoemBookmark(
+        poetId = poetId,
+        poemId = id,
+        poetName = poetName,
+        title = title
+    )
 }

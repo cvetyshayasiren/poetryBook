@@ -28,21 +28,27 @@ data class DataRandomState(
 }
 
 @Serializable
-enum class DataRandomPoemBehaviour() {
-    SAME_POET, RANDOM_POET, CERTAIN_POET, FROM_FAVORITES;
+sealed interface DataRandomPoemBehaviour {
+    data object SamePoet: DataRandomPoemBehaviour
+    data object RandomPoet: DataRandomPoemBehaviour
+
+    data class CertainPoet(val poetId: Int): DataRandomPoemBehaviour
+
+    data object FromFavorites: DataRandomPoemBehaviour
 
     fun toRandomPoemBehaviour(): RandomPoemBehaviour = when(this) {
-        SAME_POET -> RandomPoemBehaviour.SAME_POET
-        RANDOM_POET -> RandomPoemBehaviour.RANDOM_POET
-        CERTAIN_POET -> RandomPoemBehaviour.CERTAIN_POET
-        FROM_FAVORITES -> RandomPoemBehaviour.FROM_FAVORITES
+        is CertainPoet -> RandomPoemBehaviour.CertainPoet(poetId = poetId)
+        FromFavorites -> RandomPoemBehaviour.FromFavorites
+        RandomPoet -> RandomPoemBehaviour.RandomPoet
+        SamePoet -> RandomPoemBehaviour.SamePoet
     }
+
     companion object {
         fun fromRandomPoemBehaviour(behaviour: RandomPoemBehaviour): DataRandomPoemBehaviour = when(behaviour) {
-            RandomPoemBehaviour.SAME_POET -> SAME_POET
-            RandomPoemBehaviour.RANDOM_POET -> RANDOM_POET
-            RandomPoemBehaviour.CERTAIN_POET -> CERTAIN_POET
-            RandomPoemBehaviour.FROM_FAVORITES -> FROM_FAVORITES
+            is RandomPoemBehaviour.CertainPoet -> CertainPoet(poetId = behaviour.poetId)
+            RandomPoemBehaviour.FromFavorites -> FromFavorites
+            RandomPoemBehaviour.RandomPoet -> RandomPoet
+            RandomPoemBehaviour.SamePoet -> SamePoet
         }
     }
 }

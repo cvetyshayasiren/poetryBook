@@ -10,6 +10,6 @@ data class Poet(
     val poems: Poems
 )
 
-fun Poet.randomPoem(exclude: Poem): Poem = poems.random(exclude = exclude)
+fun Poet.randomPoem(exclude: Poem? = null): Poem = poems.random(exclude = exclude)
 
 

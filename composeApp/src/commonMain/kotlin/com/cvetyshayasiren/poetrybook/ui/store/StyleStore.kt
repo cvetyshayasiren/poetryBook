@@ -14,6 +14,12 @@ sealed interface StyleStoreIntent {
     class SetIsmStyle(val ismStyle: IsmStyle): StyleStoreIntent
     class SetSeedColor(val seedColor: Color): StyleStoreIntent
     class SetThemeMode(val themeMode: ThemeMode): StyleStoreIntent
+
+    class RandomiseStyle(
+        val isRandomiseSeed: Boolean = false,
+        val isRandomiseIsm: Boolean = false,
+        val isRandomiseThemeMode: Boolean = false
+    ): StyleStoreIntent
 }
 
 sealed interface StyleStoreEffect
@@ -28,6 +34,13 @@ class StyleStoreReducer(
             is StyleStoreIntent.SetIsmStyle -> state.copy(ismStyle = intent.ismStyle)
             is StyleStoreIntent.SetSeedColor -> state.copy(seedColor = intent.seedColor)
             is StyleStoreIntent.SetThemeMode -> state.copy(themeMode = intent.themeMode)
+            is StyleStoreIntent.RandomiseStyle -> {
+                state.randomised(
+                    isRandomiseIsm = intent.isRandomiseIsm,
+                    isRandomiseSeed = intent.isRandomiseSeed,
+                    isRandomiseThemeMode = intent.isRandomiseThemeMode
+                )
+            }
         }.also { repository.saveStyleState(it) }
     )
 }

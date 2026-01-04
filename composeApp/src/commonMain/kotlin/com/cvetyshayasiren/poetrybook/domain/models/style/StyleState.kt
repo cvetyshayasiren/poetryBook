@@ -9,6 +9,15 @@ data class StyleState(
     val seedColor: Color = Color.Unspecified,
     val themeMode: ThemeMode = ThemeMode.DARK
 ) {
+    fun randomised(
+        isRandomiseSeed: Boolean,
+        isRandomiseIsm: Boolean,
+        isRandomiseThemeMode: Boolean
+    ): StyleState = StyleState(
+        ismStyle = if(isRandomiseIsm) IsmStyle.random() else ismStyle,
+        seedColor = if(isRandomiseSeed) Color.random() else seedColor,
+        themeMode = if(isRandomiseThemeMode) ThemeMode.random() else themeMode
+    )
     @Composable
     fun isDarkThemeMode(): Boolean = when(themeMode) {
         ThemeMode.DARK -> true
@@ -16,3 +25,10 @@ data class StyleState(
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
 }
+
+fun Color.Companion.random(): Color =
+    Color(
+        red = (0..255).random(),
+        green = (0..255).random(),
+        blue = (0..255).random()
+    )
