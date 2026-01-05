@@ -58,7 +58,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
                     MaterialTheme.colorScheme.tertiary else Color.Transparent
                 )
                 Button(
-                    border = BorderStroke(width = 1.dp, color = borderColor),
+                    border = BorderStroke(width = 4.dp, color = borderColor),
                     onClick = {
                         styleStore.sendIntent(StyleStoreIntent.SetIsmStyle(ismStyle = ismStyle))
                     }
@@ -85,7 +85,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
                 }
             }
             Button(
-                border = BorderStroke(width = 1.dp, color = styleState.value.seedColor),
+                border = BorderStroke(width = 4.dp, color = styleState.value.seedColor),
                 onClick = {
                     styleStore.sendIntent(StyleStoreIntent.SetSeedColor(seedColor = Color.random()))
                 }
@@ -103,7 +103,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
                     MaterialTheme.colorScheme.tertiary else Color.Transparent
                 )
                 Button(
-                    border = BorderStroke(width = 1.dp, color = borderColor),
+                    border = BorderStroke(width = 4.dp, color = borderColor),
                     onClick = {
                         styleStore.sendIntent(StyleStoreIntent.SetThemeMode(themeMode = themeMode))
                     },
@@ -121,7 +121,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
         ) {
             Button(
                 border = BorderStroke(
-                    width = 1.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.CertainPoet)
+                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.CertainPoet)
                                 MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
@@ -132,7 +132,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             }
             Button(
                 border = BorderStroke(
-                    width = 1.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites)
+                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites)
                         MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
@@ -143,7 +143,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             }
             Button(
                 border = BorderStroke(
-                    width = 1.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.RandomPoet)
+                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.RandomPoet)
                         MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
@@ -154,7 +154,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             }
             Button(
                 border = BorderStroke(
-                    width = 1.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.SamePoet)
+                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.SamePoet)
                         MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
