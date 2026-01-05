@@ -12,7 +12,7 @@ abstract class Store<S, I, E>(
     sharingStarted: SharingStarted =
         SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000, replayExpirationMillis = 5000),
     private val reducer: Reducer<S, I, E>,
-    val logger: StoreLogger? = StoreLogger.Default()
+    private val logger: StoreLogger? = StoreLogger.Default()
 ): ViewModel() {
     private val storeName = this::class.simpleName.toString()
 
@@ -48,7 +48,7 @@ abstract class Store<S, I, E>(
         .onCompletion { logger?.logStoreEffectCompletion(storeName = storeName, throwable = it) }
         .shareIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000, replayExpirationMillis = 5000),
+            started = sharingStarted,
         )
 
     fun sendIntent(intent: I) {

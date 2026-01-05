@@ -1,5 +1,7 @@
 package com.cvetyshayasiren.poetrybook.domain.models.random
 
+import kotlin.enums.EnumEntries
+
 sealed interface RandomPoemBehaviour {
     data object SamePoet: RandomPoemBehaviour
     data object RandomPoet: RandomPoemBehaviour
