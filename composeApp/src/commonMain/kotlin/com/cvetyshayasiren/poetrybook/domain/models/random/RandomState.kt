@@ -6,6 +6,5 @@ data class RandomState(
     val isRandomiseIsm: Boolean = false,
     val isRandomiseThemeMode: Boolean = false,
 ) {
-    fun isNeedStyleChange(): Boolean =
-    listOf(isRandomiseSeed, isRandomiseIsm, isRandomiseThemeMode).any()
+    fun isNeedStyleChange(): Boolean = isRandomiseSeed || isRandomiseIsm || isRandomiseThemeMode
 }

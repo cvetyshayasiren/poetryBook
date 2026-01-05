@@ -6,21 +6,26 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.navigation.MainNavigationScreen
 import com.cvetyshayasiren.poetrybook.ui.navigation.isExpanded
+import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.styles.getStyleScreenBundle
+import org.kodein.di.instance
 
 @Composable
 fun MainAdaptiveScreen() {
+    val styleStore: StyleStore by di.instance()
+    val styleState = styleStore.state.collectAsState()
     val isExpanded = WindowSizeClass.isExpanded()
-    val ismStyle = remember { IsmStyle.NEU }
-    val styleScreenBundle = ismStyle.getStyleScreenBundle()
+    val styleScreenBundle = styleState.value.ismStyle.getStyleScreenBundle()
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
@@ -29,8 +34,7 @@ fun MainAdaptiveScreen() {
         MainNavigationScreen(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.primary),
+                .fillMaxHeight(),
             styleScreenBundle = styleScreenBundle,
             isExpanded = isExpanded
         )
@@ -42,7 +46,6 @@ fun MainAdaptiveScreen() {
                 modifier = Modifier
                     .width(360.dp)
                     .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .animateContentSize()
             )
         }

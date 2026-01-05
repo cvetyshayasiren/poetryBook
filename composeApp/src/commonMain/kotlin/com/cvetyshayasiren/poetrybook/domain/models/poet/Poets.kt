@@ -2,12 +2,12 @@ package com.cvetyshayasiren.poetrybook.domain.models.poet
 
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
 import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.utils.random
+import com.cvetyshayasiren.poetrybook.domain.utils.randomExclude
 
 typealias Poets = List<Poet>
 
 fun Poets.randomPoem(poetId: Int? = null, excludePoem: Poem?): Poem =
-    this[poetId ?: (0..size).random()].poems.random(exclude = excludePoem)
+    this[poetId ?: (0..< size).random()].poems.randomExclude(exclude = excludePoem)
 
 fun Poets.nextPoem(bookmark: PoemBookmark): Poem = getPoem(
     poetId = bookmark.poetId,

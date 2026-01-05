@@ -32,7 +32,7 @@ fun Poets.simpleSearch(text: String): SearchResultPoemBookmarks = buildList {
     }
 }
 
-fun Poets.hardSearch(text: String): Flow<SearchResultPoemBookmark> = flow {
+fun Poets.hardSearch(text: String, onFinish: (() -> Unit)? = null): Flow<SearchResultPoemBookmark> = flow {
     val pattern = Regex(pattern = text, option = RegexOption.IGNORE_CASE)
     this@hardSearch.forEach { poet ->
         poet.poems.forEach { poem ->
@@ -61,4 +61,5 @@ fun Poets.hardSearch(text: String): Flow<SearchResultPoemBookmark> = flow {
             }
         }
     }
+    onFinish?.let { it() }
 }

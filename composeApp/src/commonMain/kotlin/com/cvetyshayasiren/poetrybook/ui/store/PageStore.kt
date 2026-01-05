@@ -4,6 +4,7 @@ import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 
 sealed interface PageStoreState {
     data object Loading: PageStoreState
@@ -50,6 +51,5 @@ class PageStore(
     initialiseState = {
         PageStoreState.Prepared(poem = poetryBookStore.getRandomPoem())
     },
-    reducer = PageStoreReducer(poetryBookStore = poetryBookStore),
-    tag = "PageStore"
+    reducer = PageStoreReducer(poetryBookStore = poetryBookStore)
 )

@@ -8,6 +8,7 @@ import com.cvetyshayasiren.poetrybook.domain.repository.StyleStateRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 
 typealias StyleStoreState = StyleState
 sealed interface StyleStoreIntent {
@@ -50,6 +51,5 @@ class StyleStore(
 ): Store<StyleStoreState, StyleStoreIntent, StyleStoreEffect>(
     defaultState = StyleStoreState(),
     initialiseState = { repository.getStyleState() },
-    reducer = StyleStoreReducer(repository = repository),
-    tag = "StyleStore"
+    reducer = StyleStoreReducer(repository = repository)
 )

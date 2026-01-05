@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
+import com.cvetyshayasiren.poetrybook.domain.models.style.random
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStoreIntent
 import org.kodein.di.instance
@@ -33,6 +34,13 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
                 ) {
                     Text("!")
                 }
+            }
+            Button(
+                onClick = {
+                    styleStore.sendIntent(StyleStoreIntent.SetSeedColor(seedColor = Color.random()))
+                }
+            ) {
+                Text("?")
             }
         }
     }

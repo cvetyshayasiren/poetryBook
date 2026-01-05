@@ -30,9 +30,9 @@ fun MainNavigationScreen(
     Box(modifier = modifier) {
         NavDisplay(
             modifier = Modifier.fillMaxSize(),
-            backStack = state.value.backstack,
+            backStack = state.value,
             onBack = { navigationStore.sendIntent(NavigationStoreIntent.Back) },
-            entryProvider =  { key ->
+            entryProvider = { key ->
                 when(key) {
                     Destination.Page -> NavEntry(key) { styleScreenBundle.PagePane() }
                     Destination.Favorites -> NavEntry(key) { styleScreenBundle.FavoritesPane() }
@@ -43,13 +43,7 @@ fun MainNavigationScreen(
             }
         )
         styleScreenBundle.NavigationView(
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .fillMaxWidth(.8f)
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .align(Alignment.BottomCenter),
+            modifier = Modifier.align(Alignment.BottomCenter),
             isExpanded = isExpanded
         )
     }

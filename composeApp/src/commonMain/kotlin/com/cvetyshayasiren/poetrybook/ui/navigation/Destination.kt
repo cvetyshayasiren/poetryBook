@@ -2,6 +2,8 @@ package com.cvetyshayasiren.poetrybook.ui.navigation
 
 typealias Destinations = List<Destination>
 
+fun Destinations.current() = last()
+
 sealed interface Destination {
     data object Page: Destination
     data object Settings: Destination

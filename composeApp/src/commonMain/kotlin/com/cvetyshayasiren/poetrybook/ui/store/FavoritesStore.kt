@@ -7,6 +7,7 @@ import com.cvetyshayasiren.poetrybook.domain.repository.FavoritesRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 import org.kodein.di.instance
 
 typealias FavoritesStoreState = PoetsSequence
@@ -63,6 +64,5 @@ class FavoritesStore(
 ): Store<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect>(
     defaultState = FavoritesStoreState(),
     initialiseState = { repository.getFavorites() },
-    reducer = FavoritesStoreReducer(),
-    tag = "FavoritesStore"
+    reducer = FavoritesStoreReducer()
 )

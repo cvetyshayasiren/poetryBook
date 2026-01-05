@@ -1,5 +1,6 @@
 package com.cvetyshayasiren.poetrybook.domain.models.poem
 
+import com.cvetyshayasiren.poetrybook.domain.utils.currentTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -44,10 +45,9 @@ typealias TitledPoemBookmarks = List<TitledPoemBookmark>
 typealias DatedPoemBookmarks = List<DatedPoemBookmark>
 typealias SearchResultPoemBookmarks = List<SearchResultPoemBookmark>
 
-@OptIn(ExperimentalTime::class)
 fun PoemBookmark.toDatedPoemBookmark(): DatedPoemBookmark =
     DatedPoemBookmark(
         poetId = poetId,
         poemId = poemId,
-        dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        dateTime = currentTime()
     )

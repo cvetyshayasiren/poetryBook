@@ -5,10 +5,9 @@ import com.cvetyshayasiren.poetrybook.ui.navigation.Destinations
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 
-data class NavigationStoreState(
-    val backstack: Destinations = listOf(Destination.Page)
-)
+typealias NavigationStoreState = Destinations
 
 sealed interface NavigationStoreIntent {
     data object Back: NavigationStoreIntent
@@ -24,17 +23,14 @@ class NavigationStoreReducer:
         intent: NavigationStoreIntent
     ): ReducerResult<NavigationStoreState, out NavigationStoreEffect?> = ReducerResult.build(
         state = when(intent) {
-            is NavigationStoreIntent.Back ->
-                state.copy(backstack = state.backstack.dropLast(1))
-            is NavigationStoreIntent.NavigateTo ->
-                state.copy(backstack = state.backstack.plus(intent.destination))
+            is NavigationStoreIntent.Back -> state.dropLast(1)
+            is NavigationStoreIntent.NavigateTo ->  state.plus(intent.destination)
         }
     )
 }
 
 class NavigationStore:
     Store<NavigationStoreState, NavigationStoreIntent, NavigationStoreEffect>(
-        defaultState = NavigationStoreState(),
-        reducer = NavigationStoreReducer(),
-        tag = "NavigationStore"
+        defaultState = listOf(Destination.Page),
+        reducer = NavigationStoreReducer()
     )

@@ -6,9 +6,12 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
 val uiDiModule = DI.Module(name = "uiDi") {
-    bindSingleton { StyleStore(repository = instance()) }
-    bindSingleton { RandomStore(repository = instance()) }
-    bindSingleton { NavigationStore() }
-    bindSingleton { PoetryBookStore(repository = instance()) }
     bindSingleton { FavoritesStore(repository = instance()) }
+    bindSingleton { HistoryStore(repository = instance()) }
+    bindSingleton { NavigationStore() }
+    bindSingleton { PageStore(poetryBookStore = instance()) }
+    bindSingleton { PoetryBookStore(repository = instance()) }
+    bindSingleton { RandomStore(repository = instance()) }
+    bindSingleton { SearchStore() }
+    bindSingleton { StyleStore(repository = instance()) }
 }

@@ -29,11 +29,13 @@ data class DataRandomState(
 
 @Serializable
 sealed interface DataRandomPoemBehaviour {
+    @Serializable
     data object SamePoet: DataRandomPoemBehaviour
+    @Serializable
     data object RandomPoet: DataRandomPoemBehaviour
-
+    @Serializable
     data class CertainPoet(val poetId: Int): DataRandomPoemBehaviour
-
+    @Serializable
     data object FromFavorites: DataRandomPoemBehaviour
 
     fun toRandomPoemBehaviour(): RandomPoemBehaviour = when(this) {

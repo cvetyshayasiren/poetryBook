@@ -1,7 +1,7 @@
 package com.cvetyshayasiren.poetrybook.domain.models.style
 
 import com.cvetyshayasiren.poetrybook.domain.utils.PrettyLabel
-import com.cvetyshayasiren.poetrybook.domain.utils.random
+import com.cvetyshayasiren.poetrybook.domain.utils.randomExclude
 
 enum class IsmStyle(val label: PrettyLabel) {
     NEU(PrettyLabel("neumorphism", "неоморфизм")),
@@ -10,6 +10,6 @@ enum class IsmStyle(val label: PrettyLabel) {
     GLASS(PrettyLabel("glassmorphism", "глассморфизм"));
 
     companion object {
-        fun random(exclude: IsmStyle? = null): IsmStyle = entries.random(exclude = exclude)
+        fun random(exclude: IsmStyle? = null): IsmStyle = entries.randomExclude(exclude = exclude)
     }
 }

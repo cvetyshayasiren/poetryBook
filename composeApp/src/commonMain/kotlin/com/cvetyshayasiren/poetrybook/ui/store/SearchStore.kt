@@ -8,6 +8,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.SearchStoreState.SimpleSearchResu
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 import kotlinx.coroutines.flow.Flow
 import org.kodein.di.instance
 
@@ -54,6 +55,5 @@ class SearchStoreReducer:
 class SearchStore: Store<SearchStoreState, SearchStoreIntent, SearchStoreEffect>(
     defaultState = SearchStoreState.Book,
     initialiseState = { SearchStoreState.Book },
-    reducer = SearchStoreReducer(),
-    tag = "SearchStore"
+    reducer = SearchStoreReducer()
 )

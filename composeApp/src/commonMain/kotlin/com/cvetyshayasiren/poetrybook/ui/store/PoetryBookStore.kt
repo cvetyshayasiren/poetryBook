@@ -8,12 +8,15 @@ import com.cvetyshayasiren.poetrybook.domain.models.poem.SearchResultPoemBookmar
 import com.cvetyshayasiren.poetrybook.domain.models.poet.*
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.repository.PoetryBookRepository
+import com.cvetyshayasiren.poetrybook.domain.utils.currentTime
 import com.cvetyshayasiren.poetrybook.domain.utils.hardSearch
 import com.cvetyshayasiren.poetrybook.domain.utils.simpleSearch
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import org.kodein.di.instance
 
@@ -66,8 +69,7 @@ class PoetryBookStore(
 ): Store<PoetryBookState, PoetryBookIntent, PoetryBookEffect>(
     defaultState = PoetryBookState.Loading,
     initialiseState = { PoetryBookState.Prepared(book = repository.getBook()) },
-    reducer = PoetryBookReducer(),
-    tag = "PoetryBookStore"
+    reducer = PoetryBookReducer()
 ) {
     suspend fun getRandomPoem(current: Poem? = null): Poem =
         getPrepared().getRandomPoem(current = current)
