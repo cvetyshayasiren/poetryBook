@@ -14,12 +14,14 @@ fun PlugCommonPane(
     modifier: Modifier,
     style: IsmStyle,
     label: String,
-    content: @Composable (ColumnScope.() -> Unit) = {}
+    verticalArrangement: Arrangement.Vertical = Arrangement.Center,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    content: @Composable (ColumnScope.() -> Unit) = { }
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = horizontalAlignment
     ) {
         Text(style.label.labelRu)
         Text(label)

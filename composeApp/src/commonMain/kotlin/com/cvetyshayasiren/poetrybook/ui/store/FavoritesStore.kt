@@ -1,20 +1,19 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.poem.TitledPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poet.*
 import com.cvetyshayasiren.poetrybook.domain.repository.FavoritesRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 import org.kodein.di.instance
 
-typealias FavoritesStoreState = PoetsSequence
+typealias FavoritesStoreState = PresentationPoets
 
 sealed interface FavoritesStoreIntent {
-    class AddPoem(val bookmark: PoemBookmark): FavoritesStoreIntent
-    class DeletePoem(val bookmark: PoemBookmark): FavoritesStoreIntent
+    class AddPoem(val bookmark: TitledPoemBookmark): FavoritesStoreIntent
+    class DeletePoem(val bookmark: TitledPoemBookmark): FavoritesStoreIntent
 
     data object ApplyAddPoet: FavoritesStoreIntent
     class AddPoet(val poetId: Int): FavoritesStoreIntent
@@ -36,19 +35,14 @@ class FavoritesStoreReducer(): Reducer<FavoritesStoreState, FavoritesStoreIntent
     ): ReducerResult<FavoritesStoreState, out FavoritesStoreEffect?> = ReducerResult.build(
         state = when(intent) {
             is FavoritesStoreIntent.AddPoem -> state.addPoem(intent.bookmark)
-            is FavoritesStoreIntent.DeletePoem -> state.deletePoem(intent.bookmark)
-            is FavoritesStoreIntent.DeletePoet -> state.deletePoet(intent.poetId)
+            is FavoritesStoreIntent.DeletePoem ->  state.deletePoem(intent.bookmark)
+            is FavoritesStoreIntent.DeletePoet ->  state.deletePoet(intent.poetId)
             is FavoritesStoreIntent.ApplyAddPoet -> state
             is FavoritesStoreIntent.ApplyDeletePoet -> state
             is FavoritesStoreIntent.AddPoet -> {
                 val poetryBookStore: PoetryBookStore by di.instance()
-                when(val poemsBookState = poetryBookStore.state.value) {
-                    PoetryBookState.Loading -> state
-                    is PoetryBookState.Prepared -> {
-                        val poemsCount = poemsBookState.book.getPoemsCount(poetId = intent.poetId)
-                        state.addPoet(poetId = intent.poetId, poemsCount)
-                    }
-                }
+                val separatedPoet = poetryBookStore.getSeparatedPresentationPoets(intent.poetId)
+                state.addPoet(separatedPoet)
             }
         },
         effect = when(intent) {
@@ -60,9 +54,13 @@ class FavoritesStoreReducer(): Reducer<FavoritesStoreState, FavoritesStoreIntent
 }
 
 class FavoritesStore(
-    repository: FavoritesRepository
+    favoritesRepository: FavoritesRepository
 ): Store<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect>(
-    defaultState = FavoritesStoreState(),
-    initialiseState = { repository.getFavorites() },
+    defaultState = PresentationPoets(value = mapOf()),
+    initialiseState = {
+        val poetryBookStore: PoetryBookStore by di.instance()
+        val favoritesSequence = favoritesRepository.getFavorites()
+        poetryBookStore.getPresentationPoets(favoritesSequence)
+    },
     reducer = FavoritesStoreReducer()
 )

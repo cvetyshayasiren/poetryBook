@@ -1,5 +1,6 @@
 package com.cvetyshayasiren.poetrybook.domain.models.poem
 
+import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.utils.currentTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -19,7 +20,9 @@ data class TitledPoemBookmark(
     override val poemId: Int,
     val poetName: String,
     val title: String
-): PoemBookmark
+): PoemBookmark {
+    fun toPoetBookmark(): PoetBookmark = PoetBookmark(id = poetId, name = poetName)
+}
 
 data class DatedPoemBookmark(
     override val poetId: Int,

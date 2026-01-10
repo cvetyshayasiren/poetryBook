@@ -79,6 +79,10 @@ class PoetryBookStore(
 
     suspend fun simpleSearch(userInput: String): SearchResultPoemBookmarks = getPrepared().book.simpleSearch(text = userInput)
     suspend fun hardSearch(userInput: String): Flow<SearchResultPoemBookmark> = getPrepared().book.hardSearch(text = userInput)
+    suspend fun getPresentationPoets(sequence: PoetsSequence): PresentationPoets = getPrepared().book.getPresentationPoets(sequence)
+
+    suspend fun getSeparatedPresentationPoets(poetId: Int): PresentationPoets =
+        getPrepared().book.getSeparatedPresentationPoets(poetId = poetId)
 
     private suspend fun getPrepared(): PoetryBookState.Prepared =
         state.first { poetryBookState -> poetryBookState is PoetryBookState.Prepared } as PoetryBookState.Prepared
