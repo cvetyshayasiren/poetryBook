@@ -67,3 +67,10 @@ fun Poets.getSeparatedPresentationPoets(poetId: Int): PresentationPoets = Presen
         }
     )
 )
+
+fun Poets.getTitledPoemBookmark(bookmark: PoemBookmark): TitledPoemBookmark = TitledPoemBookmark(
+    poetId = bookmark.poetId,
+    poemId = bookmark.poemId,
+    poetName = this[bookmark.poetId].name,
+    title = this[bookmark.poetId].poems[bookmark.poemId].title
+)

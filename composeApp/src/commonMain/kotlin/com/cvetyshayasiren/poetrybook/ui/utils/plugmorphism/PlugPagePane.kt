@@ -1,6 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,13 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
@@ -58,7 +64,26 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                             fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
                             textDecoration = TextDecoration.Underline
                         )
-                        Text(pageState.poem.title)
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            val favoriteAlpha by animateFloatAsState(if(pageState.isInFavorites) 1f else .2f)
+                            IconButton(
+                                onClick = {
+                                    pageStore.sendIntent(PageStoreIntent.SwitchFavorites)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.error.copy(alpha = favoriteAlpha)
+                                )
+                            }
+                            Text(pageState.poem.title)
+                        }
+
                         HorizontalDivider()
                         Text(pageState.poem.text)
                         Row(

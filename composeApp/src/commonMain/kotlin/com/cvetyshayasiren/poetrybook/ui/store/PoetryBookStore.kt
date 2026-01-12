@@ -5,18 +5,16 @@ import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
 import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.SearchResultPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.SearchResultPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.poem.TitledPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poet.*
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.repository.PoetryBookRepository
-import com.cvetyshayasiren.poetrybook.domain.utils.currentTime
 import com.cvetyshayasiren.poetrybook.domain.utils.hardSearch
 import com.cvetyshayasiren.poetrybook.domain.utils.simpleSearch
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import org.kodein.di.instance
 
@@ -83,6 +81,11 @@ class PoetryBookStore(
 
     suspend fun getSeparatedPresentationPoets(poetId: Int): PresentationPoets =
         getPrepared().book.getSeparatedPresentationPoets(poetId = poetId)
+
+    suspend fun getTitledPoemBookmark(bookmark: PoemBookmark): TitledPoemBookmark =
+        getPrepared().book.getTitledPoemBookmark(bookmark = bookmark)
+
+    suspend fun getPoemsCount(poetId: Int): Int = getPrepared().book.getPoemsCount(poetId = poetId)
 
     private suspend fun getPrepared(): PoetryBookState.Prepared =
         state.first { poetryBookState -> poetryBookState is PoetryBookState.Prepared } as PoetryBookState.Prepared

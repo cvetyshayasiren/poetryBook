@@ -1,6 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
 import com.cvetyshayasiren.poetrybook.di.di
+import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poem.TitledPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poet.*
 import com.cvetyshayasiren.poetrybook.domain.repository.FavoritesRepository
@@ -12,15 +13,15 @@ import org.kodein.di.instance
 typealias FavoritesStoreState = PresentationPoets
 
 sealed interface FavoritesStoreIntent {
-    class AddPoem(val bookmark: TitledPoemBookmark): FavoritesStoreIntent
-    class DeletePoem(val bookmark: TitledPoemBookmark): FavoritesStoreIntent
+    class AddPoem(val bookmark: PoemBookmark): FavoritesStoreIntent
+    class DeletePoem(val bookmark: PoemBookmark): FavoritesStoreIntent
 
-    data object ApplyAddPoet: FavoritesStoreIntent
-    class AddPoet(val poetId: Int): FavoritesStoreIntent
+    data object ApplySwitchPoet: FavoritesStoreIntent
+    class SwitchPoet(val poetId: Int): FavoritesStoreIntent
 
-    data object ApplyDeletePoet: FavoritesStoreIntent
-    class DeletePoet(val poetId: Int): FavoritesStoreIntent
+    data object ClearFavorites: FavoritesStoreIntent
 
+    fun needSave(): Boolean = this != ApplySwitchPoet
 }
 
 sealed interface FavoritesStoreEffect {
@@ -28,26 +29,44 @@ sealed interface FavoritesStoreEffect {
     data object ShowDeleteConfirmation: FavoritesStoreEffect
 }
 
-class FavoritesStoreReducer(): Reducer<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect> {
+class FavoritesStoreReducer(
+    val favoritesRepository: FavoritesRepository
+): Reducer<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect> {
     override suspend fun reduce(
         state: FavoritesStoreState,
         intent: FavoritesStoreIntent
     ): ReducerResult<FavoritesStoreState, out FavoritesStoreEffect?> = ReducerResult.build(
         state = when(intent) {
-            is FavoritesStoreIntent.AddPoem -> state.addPoem(intent.bookmark)
-            is FavoritesStoreIntent.DeletePoem ->  state.deletePoem(intent.bookmark)
-            is FavoritesStoreIntent.DeletePoet ->  state.deletePoet(intent.poetId)
-            is FavoritesStoreIntent.ApplyAddPoet -> state
-            is FavoritesStoreIntent.ApplyDeletePoet -> state
-            is FavoritesStoreIntent.AddPoet -> {
-                val poetryBookStore: PoetryBookStore by di.instance()
-                val separatedPoet = poetryBookStore.getSeparatedPresentationPoets(intent.poetId)
-                state.addPoet(separatedPoet)
+            is FavoritesStoreIntent.AddPoem -> {
+                val titledPoemBookmark = when(intent.bookmark) {
+                    is TitledPoemBookmark -> intent.bookmark
+                    else -> {
+                        val poetryBookStore: PoetryBookStore by di.instance()
+                        poetryBookStore.getTitledPoemBookmark(intent.bookmark)
+                    }
+                }
+                state.addPoem(titledPoemBookmark)
             }
+            is FavoritesStoreIntent.DeletePoem ->  {
+                val titledPoemBookmark = when(intent.bookmark) {
+                    is TitledPoemBookmark -> intent.bookmark
+                    else -> {
+                        val poetryBookStore: PoetryBookStore by di.instance()
+                        poetryBookStore.getTitledPoemBookmark(intent.bookmark)
+                    }
+                }
+                state.deletePoem(titledPoemBookmark)
+            }
+            is FavoritesStoreIntent.ApplySwitchPoet -> state
+            is FavoritesStoreIntent.SwitchPoet -> state
+            is FavoritesStoreIntent.ClearFavorites -> PresentationPoets()
+        }.also {
+            if(intent.needSave()) { favoritesRepository.saveFavorites(it.toPoetsSequence()) }
         },
         effect = when(intent) {
-            FavoritesStoreIntent.ApplyAddPoet -> FavoritesStoreEffect.ShowAddConfirmation
-            FavoritesStoreIntent.ApplyDeletePoet -> FavoritesStoreEffect.ShowDeleteConfirmation
+            is FavoritesStoreIntent.ApplySwitchPoet -> {
+                FavoritesStoreEffect.ShowAddConfirmation
+            }
             else -> null
         }
     )
@@ -60,7 +79,10 @@ class FavoritesStore(
     initialiseState = {
         val poetryBookStore: PoetryBookStore by di.instance()
         val favoritesSequence = favoritesRepository.getFavorites()
+        println("seq: $favoritesSequence")
         poetryBookStore.getPresentationPoets(favoritesSequence)
     },
-    reducer = FavoritesStoreReducer()
-)
+    reducer = FavoritesStoreReducer(favoritesRepository = favoritesRepository)
+) {
+    fun isInFavorites(bookmark: PoemBookmark): Boolean = state.value.isIncludeBookmark(bookmark)
+}

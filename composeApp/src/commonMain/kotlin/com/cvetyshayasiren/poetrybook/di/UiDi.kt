@@ -9,7 +9,7 @@ val uiDiModule = DI.Module(name = "uiDi") {
     bindSingleton { FavoritesStore(favoritesRepository = instance()) }
     bindSingleton { HistoryStore(repository = instance()) }
     bindSingleton { NavigationStore() }
-    bindSingleton { PageStore(poetryBookStore = instance()) }
+    bindSingleton { PageStore(poetryBookStore = instance(), favoritesStore = instance()) }
     bindSingleton { PoetryBookStore(repository = instance()) }
     bindSingleton { RandomStore(repository = instance()) }
     bindSingleton { SearchStore() }

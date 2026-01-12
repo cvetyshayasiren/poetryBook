@@ -12,9 +12,14 @@ import kotlin.jvm.JvmInline
 value class PresentationPoets(val value: Map<PoetBookmark, TitledPoemBookmarks> = mapOf())
 
 fun PresentationPoets.toPoetsSequence(): PoetsSequence = PoetsSequence(
-    value = value
-        .mapKeys { it.key.id }
-        .mapValues { bookmarks -> PoemsSequence(value = bookmarks.value.map { it.poetId }) }
+    value = buildMap {
+        value.forEach { (poetBookmark, titledPoemBookmarks) ->
+            set(
+                key = poetBookmark.id,
+                value = PoemsSequence(value = titledPoemBookmarks.map { it.poemId })
+            )
+        }
+    }
 )
 
 fun PresentationPoets.randomPoemBookmark(excludeBookmark: PoemBookmark? = null): PoemBookmark {
@@ -30,7 +35,7 @@ fun PresentationPoets.randomPoemBookmark(excludeBookmark: PoemBookmark? = null):
 fun PresentationPoets.addPoem(bookmark: TitledPoemBookmark): PresentationPoets {
     val mutableMap = value.toMutableMap()
     val poetBookmark = bookmark.toPoetBookmark()
-    val poems = getBookmarks(poetBookmark)
+    val poems = getBookmarks(poetBookmark) + bookmark
     mutableMap[poetBookmark] = poems
     return PresentationPoets(value = mutableMap)
 }
@@ -57,3 +62,8 @@ fun PresentationPoets.deletePoet(poetId: Int): PresentationPoets {
 
 fun PresentationPoets.getBookmarks(bookmark: PoetBookmark): TitledPoemBookmarks =
     this.value.getOrElse(key = bookmark, defaultValue = { listOf() })
+
+fun PresentationPoets.isIncludeBookmark(bookmark: PoemBookmark): Boolean {
+    val list = this.toPoetsSequence().value[bookmark.poetId]?.value ?: PoemsSequence().value
+    return bookmark.poemId in list
+}

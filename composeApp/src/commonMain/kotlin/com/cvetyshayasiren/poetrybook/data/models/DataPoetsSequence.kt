@@ -23,7 +23,7 @@ value class DataPoetsSequence(val value: Map<Int, DataPoemsSequence>) {
 value class DataPoemsSequence(val value: List<Int>) {
     fun toPoemsSequence(): PoemsSequence = PoemsSequence(
         value = buildList<Int> {
-            require(value.isNotEmpty()) { "2The poems sequence cannot be empty" }
+            require(value.isNotEmpty()) { "The poems sequence cannot be empty" }
             var previousPoemId: Int = value.first()
 
             value.forEach { poemId ->
@@ -46,6 +46,7 @@ value class DataPoemsSequence(val value: List<Int>) {
             value = buildList<Int> {
                 require(value.value.isNotEmpty()) { "The poems sequence cannot be empty" }
                 var previousPoemId: Int = value.value.first()
+                    .also { if(value.value.size == 1) add(it) }
                 val sequenceLastIndex = value.value.size - 2
                 value.value.drop(1).forEachIndexed { index, poemId ->
                     val isInRange = (poemId - abs(previousPoemId)) == 1
