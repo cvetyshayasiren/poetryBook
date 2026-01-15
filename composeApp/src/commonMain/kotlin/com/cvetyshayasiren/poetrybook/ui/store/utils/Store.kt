@@ -2,7 +2,6 @@ package com.cvetyshayasiren.poetrybook.ui.store.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

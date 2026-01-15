@@ -1,16 +1,10 @@
 package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,12 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.cvetyshayasiren.poetrybook.di.di
@@ -36,9 +28,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.store.PageStore
 import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
-import com.cvetyshayasiren.poetrybook.ui.store.PoetryBookStore
 import com.materialkolor.ktx.darken
-import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
 @Composable

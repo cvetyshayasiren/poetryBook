@@ -5,7 +5,6 @@ import com.cvetyshayasiren.poetrybook.ui.navigation.Destinations
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 
 typealias NavigationStoreState = Destinations
 

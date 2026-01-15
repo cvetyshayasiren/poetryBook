@@ -8,7 +8,6 @@ import com.cvetyshayasiren.poetrybook.domain.repository.StyleStateRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 
 typealias StyleStoreState = StyleState
 sealed interface StyleStoreIntent {

@@ -2,18 +2,14 @@ package com.cvetyshayasiren.poetrybook.ui.adaptive
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.navigation.MainNavigationScreen
 import com.cvetyshayasiren.poetrybook.ui.navigation.isExpanded
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore

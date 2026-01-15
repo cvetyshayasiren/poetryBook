@@ -1,7 +1,5 @@
 package com.cvetyshayasiren.poetrybook.domain.utils
 
-import com.cvetyshayasiren.poetrybook.domain.models.poem.SearchResultPoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.poem.SearchResultPoemBookmarks
 import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

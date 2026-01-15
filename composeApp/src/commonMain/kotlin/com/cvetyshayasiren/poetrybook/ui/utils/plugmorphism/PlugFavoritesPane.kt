@@ -6,14 +6,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStore
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStoreIntent
-import com.cvetyshayasiren.poetrybook.ui.store.PoetryBookStore
 import org.kodein.di.instance
 
 @Composable

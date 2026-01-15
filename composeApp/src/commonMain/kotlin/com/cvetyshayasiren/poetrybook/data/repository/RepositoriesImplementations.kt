@@ -1,9 +1,9 @@
 package com.cvetyshayasiren.poetrybook.data.repository
 
 import com.cvetyshayasiren.poetrybook.data.models.*
-import com.cvetyshayasiren.poetrybook.domain.models.poem.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
-import com.cvetyshayasiren.poetrybook.domain.models.poet.PoetsSequence
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
 import com.cvetyshayasiren.poetrybook.domain.models.style.StyleState
 import com.cvetyshayasiren.poetrybook.domain.repository.*
@@ -64,19 +64,19 @@ class FavoritesRepositoryImplementation(): FavoritesRepository {
     private val settings = Settings()
     private val key = "favorites"
     private val default =
-        Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(PoetsSequence()))
+        Json.encodeToString<DataSequence>(DataSequence.fromSequence(Sequence(value = mapOf())))
 
-    override fun getFavorites(): PoetsSequence = Json.decodeFromString<DataPoetsSequence>(
+    override fun getFavorites(): Sequence = Json.decodeFromString<DataSequence>(
         string = settings.getString(
             key = key,
             defaultValue = default
         )
-    ).toPoetsSequence()
+    ).toSequence()
 
-    override fun saveFavorites(favorites: PoetsSequence) {
+    override fun saveFavorites(favorites: Sequence) {
         settings.putString(
             key = key,
-            value = Json.encodeToString<DataPoetsSequence>(DataPoetsSequence.fromPoetSequence(favorites))
+            value = Json.encodeToString<DataSequence>(DataSequence.fromSequence(favorites))
         )
     }
 }

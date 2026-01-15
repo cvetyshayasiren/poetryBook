@@ -1,5 +1,6 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicPoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
 import kotlinx.serialization.Serializable
@@ -39,7 +40,7 @@ sealed interface DataRandomPoemBehaviour {
     data object FromFavorites: DataRandomPoemBehaviour
 
     fun toRandomPoemBehaviour(): RandomPoemBehaviour = when(this) {
-        is CertainPoet -> RandomPoemBehaviour.CertainPoet(poetId = poetId)
+        is CertainPoet -> RandomPoemBehaviour.CertainPoet(poetBookmark = BasicPoetBookmark(poetId))
         FromFavorites -> RandomPoemBehaviour.FromFavorites
         RandomPoet -> RandomPoemBehaviour.RandomPoet
         SamePoet -> RandomPoemBehaviour.SamePoet
@@ -47,7 +48,7 @@ sealed interface DataRandomPoemBehaviour {
 
     companion object {
         fun fromRandomPoemBehaviour(behaviour: RandomPoemBehaviour): DataRandomPoemBehaviour = when(behaviour) {
-            is RandomPoemBehaviour.CertainPoet -> CertainPoet(poetId = behaviour.poetId)
+            is RandomPoemBehaviour.CertainPoet -> CertainPoet(poetId = behaviour.poetBookmark.id)
             RandomPoemBehaviour.FromFavorites -> FromFavorites
             RandomPoemBehaviour.RandomPoet -> RandomPoet
             RandomPoemBehaviour.SamePoet -> SamePoet

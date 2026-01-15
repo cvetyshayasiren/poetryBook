@@ -1,7 +1,7 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
-import com.cvetyshayasiren.poetrybook.domain.models.poem.DatedPoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.poem.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmarks
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 

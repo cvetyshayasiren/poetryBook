@@ -7,7 +7,6 @@ import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import com.cvetyshayasiren.poetrybook.ui.store.utils.StoreLogger
 
 typealias HistoryStoreState = DatedPoemBookmarks
 

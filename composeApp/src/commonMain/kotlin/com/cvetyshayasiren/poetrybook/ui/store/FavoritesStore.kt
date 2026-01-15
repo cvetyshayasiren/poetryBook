@@ -1,8 +1,8 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.poem.TitledPoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.*
 import com.cvetyshayasiren.poetrybook.domain.repository.FavoritesRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
@@ -10,7 +10,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 import org.kodein.di.instance
 
-typealias FavoritesStoreState = PresentationPoets
+typealias FavoritesStoreState = Sequence
 
 sealed interface FavoritesStoreIntent {
     class AddPoem(val bookmark: PoemBookmark): FavoritesStoreIntent
