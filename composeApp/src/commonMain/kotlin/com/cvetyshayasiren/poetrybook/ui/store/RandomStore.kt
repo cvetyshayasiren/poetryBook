@@ -1,9 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmarks
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
 import com.cvetyshayasiren.poetrybook.domain.repository.RandomStateRepository

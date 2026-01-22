@@ -1,7 +1,10 @@
 package com.cvetyshayasiren.poetrybook.data.repository
 
 import com.cvetyshayasiren.poetrybook.data.models.*
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicSequence
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
@@ -64,16 +67,18 @@ class FavoritesRepositoryImplementation(): FavoritesRepository {
     private val settings = Settings()
     private val key = "favorites"
     private val default =
-        Json.encodeToString<DataSequence>(DataSequence.fromSequence(Sequence(value = mapOf())))
+        Json.encodeToString<DataSequence>(
+            value = DataSequence.fromSequence(BasicSequence(value = mapOf()))
+        )
 
-    override fun getFavorites(): Sequence = Json.decodeFromString<DataSequence>(
+    override fun getFavorites(): BasicSequence = Json.decodeFromString<DataSequence>(
         string = settings.getString(
             key = key,
             defaultValue = default
         )
-    ).toSequence()
+    ).toSequence().toBasicSequence()
 
-    override fun saveFavorites(favorites: Sequence) {
+    override fun saveFavorites(favorites: Sequence<out PoetBookmark, out Bookmark>) {
         settings.putString(
             key = key,
             value = Json.encodeToString<DataSequence>(DataSequence.fromSequence(favorites))
@@ -85,19 +90,19 @@ class HistoryRepositoryImplementation(): HistoryRepository {
     private val settings = Settings()
     private val key = "history"
     private val default =
-        Json.encodeToString<DataDatedPoemBookmarks>(listOf())
+        Json.encodeToString<DataDatedBookmarks>(listOf())
 
-    override fun getHistory(): DatedPoemBookmarks = Json.decodeFromString<DataDatedPoemBookmarks>(
+    override fun getHistory(): DatedPoemBookmarks = Json.decodeFromString<DataDatedBookmarks>(
         string = settings.getString(
             key = key,
             defaultValue = default
         )
-    ).toDatedPoemBookmarks()
+    ).toDatedBookmarks()
 
     override fun saveHistory(history: DatedPoemBookmarks) {
         settings.putString(
             key = key,
-            value = Json.encodeToString<DataDatedPoemBookmarks>(fromDatedPoetBookmarks(history))
+            value = Json.encodeToString<DataDatedBookmarks>(fromDatedPoetBookmarks(history))
         )
     }
 }

@@ -1,6 +1,9 @@
 package com.cvetyshayasiren.poetrybook.domain.repository
 
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicSequence
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
 import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
@@ -21,8 +24,8 @@ interface RandomStateRepository {
 }
 
 interface FavoritesRepository {
-    fun getFavorites(): Sequence
-    fun saveFavorites(favorites: Sequence)
+    fun getFavorites(): BasicSequence
+    fun saveFavorites(favorites: Sequence<out PoetBookmark, out Bookmark>)
 }
 
 interface HistoryRepository {

@@ -1,12 +1,11 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicPoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.random
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.contains
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
-import com.cvetyshayasiren.poetrybook.domain.models.poem.toPoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.poem.toBasicPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poet.getPoem
 import com.cvetyshayasiren.poetrybook.domain.models.poet.nextPoem
 import com.cvetyshayasiren.poetrybook.domain.models.poet.previousPoem
@@ -78,7 +77,7 @@ data class PageBookmark(
     val title: String,
     val text: String,
     val isInFavorites: Boolean
-): PoemBookmark {
+): Bookmark {
 
     suspend fun nextPage(): PageBookmark {
         val poetryBookStore: PoetryBookStore by di.instance()
@@ -95,7 +94,7 @@ data class PageBookmark(
     fun switchFavorites(): PageBookmark = copy(isInFavorites = !isInFavorites)
 
     companion object {
-        suspend fun random(current: PoemBookmark? = null): PageBookmark {
+        suspend fun random(current: Bookmark? = null): PageBookmark {
             val randomStore: RandomStore by di.instance()
             val randomState = randomStore.state.value.randomState
             if(randomState.isNeedStyleChange()) {
@@ -113,7 +112,7 @@ data class PageBookmark(
             val book = poetryBookStore.getBook()
             return when(val behaviour = randomState.randomPoemBehaviour) {
                 RandomPoemBehaviour.SamePoet ->
-                    book.randomPoem(exclude = current, poetBookmark = current?.getPoetBookmark()).toPageBookmark()
+                    book.randomPoem(exclude = current, poetBookmark = current?.toBasicPoetBookmark()).toPageBookmark()
                 RandomPoemBehaviour.RandomPoet ->
                     book.randomPoem(exclude = current).toPageBookmark()
                 is RandomPoemBehaviour.CertainPoet ->
@@ -131,7 +130,7 @@ data class PageBookmark(
 suspend fun Poem.toPageBookmark(): PageBookmark {
     val favoritesStore: FavoritesStore by di.instance()
     val state = favoritesStore.state.value
-    val isInFavorites = state.contains(value = toPoemBookmark())
+    val isInFavorites = state.contains(value = toBasicPoemBookmark())
 
     return PageBookmark(
         poetId = poetId,
@@ -143,7 +142,7 @@ suspend fun Poem.toPageBookmark(): PageBookmark {
     )
 }
 
-suspend fun PoemBookmark.toPageBookmark(): PageBookmark {
+suspend fun Bookmark.toPageBookmark(): PageBookmark {
     val poetryBookStore: PoetryBookStore by di.instance()
     val book = poetryBookStore.getBook()
     val poem = book.getPoem(this)

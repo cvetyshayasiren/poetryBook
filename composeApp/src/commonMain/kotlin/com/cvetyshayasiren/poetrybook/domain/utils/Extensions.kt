@@ -16,3 +16,5 @@ fun<T> Collection<T>.randomExcludeBy(excludeWhen: ((T) -> Boolean)? = null): T {
     }
     return candidate
 }
+
+inline fun<reified T> Collection<T>.toLinkedHashSet(): LinkedHashSet<T> = linkedSetOf(*this.toTypedArray())

@@ -27,7 +27,7 @@ class PoetryBookStore(
     repository: PoetryBookRepository
 ): Store<PoetryBookState, PoetryBookIntent, PoetryBookEffect>(
     defaultState = PoetryBookState.Loading,
-    initialiseState = { PoetryBookState.Prepared(book = repository.getBook()) },
+    initialiseState = { PoetryBookState.Prepared(book = repository.getBook()).also { it.book.check() } },
     reducer = PoetryBookReducer()
 ) {
     suspend fun getBook(): Poets =

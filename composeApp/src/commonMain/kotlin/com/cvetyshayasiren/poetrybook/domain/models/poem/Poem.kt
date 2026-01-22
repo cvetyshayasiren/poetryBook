@@ -1,6 +1,6 @@
 package com.cvetyshayasiren.poetrybook.domain.models.poem
 
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicPoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 
 data class Poem(
     val id: Int,
@@ -10,4 +10,4 @@ data class Poem(
     val text: String
 )
 
-fun Poem.toPoemBookmark() = BasicPoemBookmark(poetId = poetId, poemId = id)
+fun Poem.toBasicPoemBookmark() = Bookmark.Basic(poetId = poetId, poemId = id)
