@@ -130,7 +130,7 @@ data class PageBookmark(
 suspend fun Poem.toPageBookmark(): PageBookmark {
     val favoritesStore: FavoritesStore by di.instance()
     val state = favoritesStore.state.value
-    val isInFavorites = state.contains(value = toBasicPoemBookmark())
+    val isInFavorites = state.contains(bookmark = toBasicPoemBookmark())
 
     return PageBookmark(
         poetId = poetId,

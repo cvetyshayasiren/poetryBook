@@ -1,8 +1,8 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import com.cvetyshayasiren.poetrybook.domain.models.poem.DatedPoemBookmarks
-import com.cvetyshayasiren.poetrybook.domain.models.poem.PoemBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.poem.toDatedPoemBookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmarks
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.toDatedPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
@@ -11,7 +11,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 typealias HistoryStoreState = DatedPoemBookmarks
 
 sealed interface HistoryStoreIntent {
-    class AddBookmark(val bookmark: PoemBookmark): HistoryStoreIntent
+    class AddBookmark(val bookmark: Bookmark): HistoryStoreIntent
     class Clear(val index: Int): HistoryStoreIntent
     data object ClearAll: HistoryStoreIntent
 }

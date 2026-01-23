@@ -14,7 +14,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 import org.kodein.di.instance
-import kotlin.text.get
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.contains
 
 typealias FavoritesStoreState = Sequence<FavoritePoetBookmark, FavoriteBookmark>
 
@@ -77,9 +77,12 @@ class FavoritesStore(
     defaultState = FavoritesStoreState(mapOf()),
     initialiseState = { favoritesRepository.getFavorites().toFavoritesStoreState() },
     reducer = FavoritesStoreReducer(favoritesRepository)
-)
+) {
+    fun contains(bookmark: Bookmark): Boolean = state.value.contains(bookmark)
+}
 
 //models
+
 data class FavoritePoetBookmark(
     override val id: Int,
     val name: String,
