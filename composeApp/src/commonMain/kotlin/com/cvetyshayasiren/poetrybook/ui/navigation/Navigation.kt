@@ -11,6 +11,8 @@ import androidx.navigation3.ui.NavDisplay
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.store.PageStore
+import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 import org.kodein.di.instance
 

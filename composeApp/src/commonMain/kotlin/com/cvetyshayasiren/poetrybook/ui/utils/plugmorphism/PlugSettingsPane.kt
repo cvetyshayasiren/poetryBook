@@ -9,12 +9,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import com.cvetyshayasiren.poetrybook.di.di
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.domain.models.style.ThemeMode
@@ -25,6 +29,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStoreIntent
 import org.kodein.di.instance
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
 
@@ -108,20 +113,40 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
             horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
         ) {
-            Button(
-                border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.CertainPoet)
-                                MaterialTheme.colorScheme.tertiary else Color.Transparent)),
-                onClick = {
-                    randomStore.sendIntent(RandomStoreIntent
-                        .SetNextPoemBehaviour(RandomPoemBehaviour.CertainPoet(0)))
-                },
+            val expanded = remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = expanded.value,
+                onExpandedChange = { expanded.value = !expanded.value }
             ) {
-                Text("CERTAINT POET")
+                TextField(
+                    modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true),
+                    readOnly = true,
+                    value = "",
+                    onValueChange = { },
+                    label = { Text("Поэт") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    randomState.value.poets.forEach { poet ->
+                        DropdownMenuItem(
+                            onClick = {
+                                randomStore.sendIntent(RandomStoreIntent
+                                    .SetNextPoemBehaviour(RandomPoemBehaviour.CertainPoet(poet)))
+                            },
+                            text = { Text(poet.name) }
+                        )
+                    }
+                }
             }
+
             Button(
                 border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites)
+                    width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites)
                         MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
@@ -132,7 +157,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             }
             Button(
                 border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.RandomPoet)
+                    width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.RandomPoet)
                         MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
@@ -143,7 +168,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             }
             Button(
                 border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomPoemBehaviour is RandomPoemBehaviour.SamePoet)
+                    width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.SamePoet)
                         MaterialTheme.colorScheme.tertiary else Color.Transparent)),
                 onClick = {
                     randomStore.sendIntent(RandomStoreIntent
@@ -161,7 +186,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
 
         ) {
             Switch(
-                checked = randomState.value.isRandomiseIsm,
+                checked = randomState.value.randomState.isRandomiseIsm,
                 onCheckedChange = {
                     randomStore.sendIntent(RandomStoreIntent.SetIsRandomiseIsm(it))
                 }
@@ -175,7 +200,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
 
         ) {
             Switch(
-                checked = randomState.value.isRandomiseSeed,
+                checked = randomState.value.randomState.isRandomiseSeed,
                 onCheckedChange = {
                     randomStore.sendIntent(RandomStoreIntent.SetIsRandomiseSeed(it))
                 }
@@ -189,7 +214,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
 
         ) {
             Switch(
-                checked = randomState.value.isRandomiseThemeMode,
+                checked = randomState.value.randomState.isRandomiseThemeMode,
                 onCheckedChange = {
                     randomStore.sendIntent(RandomStoreIntent.SetIsRandomiseThemeMod(it))
                 }

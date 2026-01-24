@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.store.PageStore
@@ -44,7 +46,7 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = pageState.poem.poetName,
+                            text = pageState.page.poetName,
                             fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
                             textDecoration = TextDecoration.Underline
                         )
@@ -53,7 +55,7 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            val favoriteAlpha by animateFloatAsState(if(pageState.isInFavorites) 1f else .2f)
+                            val favoriteAlpha by animateFloatAsState(if(pageState.page.isInFavorites) 1f else .2f)
                             IconButton(
                                 onClick = {
                                     pageStore.sendIntent(PageStoreIntent.SwitchFavorites)
@@ -65,11 +67,11 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                                     tint = MaterialTheme.colorScheme.error.copy(alpha = favoriteAlpha)
                                 )
                             }
-                            Text(pageState.poem.title)
+                            Text(pageState.page.title)
                         }
 
                         HorizontalDivider()
-                        Text(pageState.poem.text)
+                        Text(pageState.page.text)
                         Row(
                             modifier = Modifier.fillMaxWidth(.5f),
                             verticalAlignment = Alignment.CenterVertically,

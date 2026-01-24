@@ -4,10 +4,23 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Pages
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Casino
+import androidx.compose.material.icons.outlined.Pages
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +54,6 @@ fun PlugNavigationView(
     val navigationState = navigationStore.state.collectAsState()
     val pageStore: PageStore by di.instance()
     val navList = Destination.navList(isExpanded)
-    val buttonSize = remember { DpSize(150.dp, 50.dp) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
@@ -56,30 +68,39 @@ fun PlugNavigationView(
                 targetValue = if(destination == navigationState.value.current())
                     MaterialTheme.colorScheme.tertiary else Color.Transparent
             )
-            Button(
-                modifier = Modifier.size(buttonSize),
-                border = BorderStroke(width = 2.dp, color = borderColor),
+            IconButton(
+                modifier = Modifier
+                    .border(width = 2.dp, color = borderColor, shape = CircleShape),
+                shape = CircleShape,
                 onClick = {
                     navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(destination))
                 }
             ) {
-                Text(destination::class.simpleName ?: "???")
+                Icon(
+                    imageVector = when(destination) {
+                        Destination.Favorites -> Icons.Filled.Favorite
+                        Destination.History -> Icons.Filled.History
+                        Destination.Page -> Icons.Filled.Pages
+                        Destination.Search -> Icons.Filled.Search
+                        Destination.Settings -> Icons.Filled.Settings
+                    },
+                    contentDescription = null,
+                )
             }
         }
         val isPage = navigationState.value.current() == Destination.Page
         val borderColor by animateColorAsState(
             targetValue = if(isPage) MaterialTheme.colorScheme.tertiary else Color.Transparent
         )
-        val diceSize by animateFloatAsState(if(isPage) 1f else .5f)
         val diceColor by animateColorAsState(
             if(isPage) MaterialTheme.colorScheme.primary
             else MaterialTheme.colorScheme.primary.darken(1.5f)
         )
-        Button(
+        IconButton(
             modifier = Modifier
-                .size(buttonSize * diceSize),
-            border = BorderStroke(width = 2.dp, color = borderColor),
-            colors = ButtonDefaults.buttonColors(containerColor = diceColor),
+                .border(width = 2.dp, color = borderColor, shape = CircleShape),
+            colors = IconButtonDefaults.iconButtonColors(containerColor = diceColor),
+            shape = CircleShape,
             onClick = {
                 when(isPage) {
                     true -> pageStore.sendIntent(PageStoreIntent.SwitchRandom)
@@ -87,7 +108,13 @@ fun PlugNavigationView(
                 }
             }
         ) {
-            Text(if(isPage) "dice" else "...")
+            Icon(
+                imageVector = when(isPage) {
+                    true -> Icons.Outlined.Casino
+                    false -> Icons.Outlined.Pages
+                },
+                contentDescription = null
+            )
         }
     }
 }

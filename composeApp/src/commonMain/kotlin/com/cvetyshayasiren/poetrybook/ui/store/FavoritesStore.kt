@@ -32,8 +32,8 @@ sealed interface FavoritesStoreIntent {
 }
 
 sealed interface FavoritesStoreEffect {
-    data class ShowAddConfirmation(val count: Int): FavoritesStoreEffect
-    data class ShowDeleteConfirmation(val count: Int): FavoritesStoreEffect
+    data class ShowAddConfirmation(val poetBookmark: PoetBookmark, val count: Int): FavoritesStoreEffect
+    data class ShowDeleteConfirmation(val poetBookmark: PoetBookmark, val count: Int): FavoritesStoreEffect
 }
 
 class FavoritesStoreReducer(
@@ -57,12 +57,14 @@ class FavoritesStoreReducer(
             is FavoritesStoreIntent.ApplySwitchPoet -> {
                 val poemsInFavoritesSize = state.value[intent.poetBookmark]?.size ?: 0
                 when(intent.poetBookmark.isInFavorites) {
-                    true -> FavoritesStoreEffect.ShowDeleteConfirmation(poemsInFavoritesSize)
+                    true -> FavoritesStoreEffect
+                        .ShowDeleteConfirmation(poetBookmark = intent.poetBookmark, count = poemsInFavoritesSize)
                     false -> {
                         val poetryBookStore: PoetryBookStore by di.instance()
                         val book = poetryBookStore.getBook()
                         val poemsSize = book.getPoemsSize(intent.poetBookmark)
-                        FavoritesStoreEffect.ShowAddConfirmation(poemsSize - poemsInFavoritesSize)
+                        FavoritesStoreEffect
+                            .ShowAddConfirmation(poetBookmark = intent.poetBookmark, count = poemsSize - poemsInFavoritesSize)
                     }
                 }
             }
