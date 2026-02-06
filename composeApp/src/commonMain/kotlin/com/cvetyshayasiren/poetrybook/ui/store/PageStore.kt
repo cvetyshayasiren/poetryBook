@@ -1,7 +1,10 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
+import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.random
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.contains
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
@@ -11,9 +14,12 @@ import com.cvetyshayasiren.poetrybook.domain.models.poet.nextPoem
 import com.cvetyshayasiren.poetrybook.domain.models.poet.previousPoem
 import com.cvetyshayasiren.poetrybook.domain.models.poet.randomPoem
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
+import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
 sealed interface PageStoreState {
@@ -26,7 +32,8 @@ sealed interface PageStoreIntent {
     data object SwitchNext: PageStoreIntent
     data object SwitchPrevious: PageStoreIntent
     data object SwitchFavorites: PageStoreIntent
-    data object RefreshPage: PageStoreIntent
+    data class NavigateAndSwitch(val bookmark: Bookmark): PageStoreIntent
+    data class NavigateToSearch(val selectedPoet: PoetBookmark? = null): PageStoreIntent
 }
 
 sealed interface PageStoreEffect
@@ -35,30 +42,33 @@ class PageStoreReducer(): Reducer<PageStoreState, PageStoreIntent, PageStoreEffe
     override suspend fun reduce(
         state: PageStoreState,
         intent: PageStoreIntent
-    ): ReducerResult<PageStoreState, out PageStoreEffect?> {
+    ): ReducerResult<PageStoreState, out PageStoreEffect?> = ReducerResult.build {
         val currentPage = when(state) {
             PageStoreState.Loading -> PageBookmark.random()
             is PageStoreState.Prepared -> state.page
         }
         val newPage = when(intent) {
             PageStoreIntent.SwitchRandom -> PageBookmark.random(current = currentPage)
-            PageStoreIntent.RefreshPage -> currentPage.toPageBookmark()
             PageStoreIntent.SwitchNext -> currentPage.nextPage()
             PageStoreIntent.SwitchPrevious -> currentPage.previousPage()
-            PageStoreIntent.SwitchFavorites -> {
+            PageStoreIntent.SwitchFavorites -> currentPage.also { bookmark ->
                 val favoritesStore: FavoritesStore by di.instance()
-                currentPage.switchFavorites().also { pageBookmark ->
-                    favoritesStore.sendIntent(
-                        intent = when(pageBookmark.isInFavorites) {
-                            true -> FavoritesStoreIntent.AddPoem(pageBookmark)
-                            false -> FavoritesStoreIntent.DeletePoem(pageBookmark)
-                        }
-                    )
+                favoritesStore.sendIntent(intent = FavoritesStoreIntent.SwitchPoem(bookmark))
+            }
+            is PageStoreIntent.NavigateAndSwitch -> intent.bookmark.toPageBookmark().also {
+                val navigationStore: NavigationStore by di.instance()
+                navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.Page))
+            }
+            is PageStoreIntent.NavigateToSearch -> currentPage.also {
+                if(intent.selectedPoet != null) {
+                    val searchStore: SearchStore by di.instance()
+                    searchStore.sendIntent(SearchStoreIntent.SetBook(intent.selectedPoet))
                 }
+                val navigationStore: NavigationStore by di.instance()
+                navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.Search))
             }
         }
-
-        return ReducerResult.build(state = PageStoreState.Prepared(page = newPage))
+        this@build.newState = PageStoreState.Prepared(page = newPage)
     }
 }
 
@@ -66,7 +76,37 @@ class PageStore(): Store<PageStoreState, PageStoreIntent, PageStoreEffect>(
     defaultState = PageStoreState.Loading,
     initialiseState = { PageStoreState.Prepared(page = PageBookmark.random()) },
     reducer = PageStoreReducer()
-)
+) {
+    init {
+        launchAfterInit { historyDaemon() }
+        launchAfterInit { favoritesDaemon() }
+    }
+
+    suspend fun historyDaemon() {
+        state.collect { pageStoreState ->
+            if(pageStoreState is PageStoreState.Prepared) {
+                val historyStore: HistoryStore by di.instance()
+                historyStore.sendIntent(HistoryStoreIntent.AddBookmark(pageStoreState.page))
+            }
+        }
+    }
+
+    suspend fun favoritesDaemon() {
+        val favoritesStore: FavoritesStore by di.instance()
+        favoritesStore.state.collect { favoritesStoreState ->
+            updateState { oldState ->
+                 when(oldState is PageStoreState.Prepared) {
+                    true -> {
+                        val bookmark = oldState.page
+                        val isInFavorites = favoritesStoreState.contains(bookmark = bookmark)
+                        return@updateState oldState.copy(page = bookmark.copy(isInFavorites = isInFavorites))
+                    }
+                    false -> oldState
+                }
+            }
+        }
+    }
+}
 
 //models
 
@@ -90,8 +130,6 @@ data class PageBookmark(
         val book = poetryBookStore.getBook()
         return book.previousPoem(this).toPageBookmark()
     }
-
-    fun switchFavorites(): PageBookmark = copy(isInFavorites = !isInFavorites)
 
     companion object {
         suspend fun random(current: Bookmark? = null): PageBookmark {

@@ -20,12 +20,12 @@ class NavigationStoreReducer:
     override suspend fun reduce(
         state: NavigationStoreState,
         intent: NavigationStoreIntent
-    ): ReducerResult<NavigationStoreState, out NavigationStoreEffect?> = ReducerResult.build(
-        state = when(intent) {
+    ): ReducerResult<NavigationStoreState, out NavigationStoreEffect?> = ReducerResult.build {
+        newState = when(intent) {
             is NavigationStoreIntent.Back -> state.dropLast(1)
             is NavigationStoreIntent.NavigateTo ->  state.plus(intent.destination)
         }
-    )
+    }
 }
 
 class NavigationStore:

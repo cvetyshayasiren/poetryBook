@@ -1,6 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.domain.models.style.StyleState
 import com.cvetyshayasiren.poetrybook.domain.models.style.ThemeMode
@@ -8,6 +9,7 @@ import com.cvetyshayasiren.poetrybook.domain.repository.StyleStateRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
+import kotlinx.coroutines.launch
 
 typealias StyleStoreState = StyleState
 sealed interface StyleStoreIntent {
@@ -24,13 +26,11 @@ sealed interface StyleStoreIntent {
 
 sealed interface StyleStoreEffect
 
-class StyleStoreReducer(
-    val repository: StyleStateRepository
-): Reducer<StyleStoreState, StyleStoreIntent, StyleStoreEffect> {
+class StyleStoreReducer(): Reducer<StyleStoreState, StyleStoreIntent, StyleStoreEffect> {
 
     override suspend fun reduce(state: StyleStoreState, intent: StyleStoreIntent):
-            ReducerResult<StyleStoreState, out StyleStoreEffect?> = ReducerResult.build(
-        state = when(intent) {
+            ReducerResult<StyleStoreState, out StyleStoreEffect?> = ReducerResult.build {
+        newState = when(intent) {
             is StyleStoreIntent.SetIsmStyle -> state.copy(ismStyle = intent.ismStyle)
             is StyleStoreIntent.SetSeedColor -> state.copy(seedColor = intent.seedColor)
             is StyleStoreIntent.SetThemeMode -> state.copy(themeMode = intent.themeMode)
@@ -41,8 +41,8 @@ class StyleStoreReducer(
                     isRandomiseThemeMode = intent.isRandomiseThemeMode
                 )
             }
-        }.also { repository.saveStyleState(it) }
-    )
+        }
+    }
 }
 
 class StyleStore(
@@ -50,5 +50,15 @@ class StyleStore(
 ): Store<StyleStoreState, StyleStoreIntent, StyleStoreEffect>(
     defaultState = StyleStoreState(),
     initialiseState = { repository.getStyleState() },
-    reducer = StyleStoreReducer(repository = repository)
-)
+    reducer = StyleStoreReducer()
+) {
+    init {
+        launchAfterInit { savingDaemon(repository) }
+    }
+
+    suspend fun savingDaemon(repository: StyleStateRepository) {
+        state.collect { styleStoreState ->
+            if(stateIsInit) { repository.saveStyleState(styleStoreState) }
+        }
+    }
+}

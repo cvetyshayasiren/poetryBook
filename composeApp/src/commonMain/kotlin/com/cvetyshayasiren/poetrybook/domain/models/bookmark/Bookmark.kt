@@ -17,7 +17,6 @@ interface Bookmark {
 typealias Bookmarks = List<Bookmark>
 typealias BasicBookmarks = List<Bookmark.Basic>
 
-
 data class DatedBookmark(
     override val poetId: Int,
     override val poemId: Int,

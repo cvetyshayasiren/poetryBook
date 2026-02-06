@@ -42,6 +42,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStore
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStoreEffect
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.utils.containers.AlertConfirmationDialog
 import kotlinx.coroutines.flow.collect
 import org.kodein.di.instance
 
@@ -51,7 +52,7 @@ fun PlugFavoritesPane(modifier: Modifier, style: IsmStyle) {
     val state = favoritesStore.state.collectAsState()
     val effect = favoritesStore.effect.collectAsStateWithLifecycle(initialValue = null)
 
-    PlugCommonPane(modifier, style, "FAVORITES") {
+    PlugCommonPane(modifier.fillMaxSize().padding(horizontal = 24.dp), style, "FAVORITES") {
 
         Button(
             onClick = { favoritesStore.sendIntent(FavoritesStoreIntent.ClearFavorites) }
@@ -59,7 +60,7 @@ fun PlugFavoritesPane(modifier: Modifier, style: IsmStyle) {
             Text("clear all")
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
+        LazyColumn {
             state.value.value.forEach { (poetBookmark, bookmarks) ->
                 stickyHeader {
 
@@ -151,29 +152,5 @@ fun PlugFavoritesPane(modifier: Modifier, style: IsmStyle) {
                 Text("DELETE")
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-inline fun<reified E> AlertConfirmationDialog(
-    modifier: Modifier = Modifier,
-    effect: Any?,
-    crossinline content: @Composable (E, MutableState<Boolean>) -> Unit,
-) {
-    val enabled = remember { mutableStateOf(false) }
-    if(effect !is E) { return }
-
-    LaunchedEffect(effect) {
-        enabled.value = true
-    }
-
-    if(enabled.value) {
-        BasicAlertDialog(
-            onDismissRequest = { enabled.value = false },
-            modifier = modifier,
-            properties = DialogProperties(),
-            content = { content(effect, enabled) }
-        )
     }
 }

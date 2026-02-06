@@ -20,7 +20,7 @@ class PoetryBookReducer: Reducer<PoetryBookState, PoetryBookIntent, PoetryBookEf
     override suspend fun reduce(
         state: PoetryBookState,
         intent: PoetryBookIntent
-    ): ReducerResult<PoetryBookState, out PoetryBookEffect?> = ReducerResult.build(state = state)
+    ): ReducerResult<PoetryBookState, out PoetryBookEffect?> = ReducerResult.build { newState = state }
 }
 
 class PoetryBookStore(

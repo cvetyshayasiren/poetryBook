@@ -1,5 +1,6 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
+import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicSequence
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
@@ -15,20 +16,22 @@ import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 import org.kodein.di.instance
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.contains
+import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
+import kotlinx.coroutines.launch
 
 typealias FavoritesStoreState = Sequence<FavoritePoetBookmark, FavoriteBookmark>
 
 sealed interface FavoritesStoreIntent {
     data class AddPoem(val bookmark: Bookmark): FavoritesStoreIntent
     data class DeletePoem(val bookmark: Bookmark): FavoritesStoreIntent
+    data class SwitchPoem(val bookmark: Bookmark): FavoritesStoreIntent
 
     data class ApplySwitchPoet(val poetBookmark: FavoritePoetBookmark): FavoritesStoreIntent
     data class AddPoet(val poetBookmark: PoetBookmark): FavoritesStoreIntent
     data class DeletePoet(val poetBookmark: PoetBookmark): FavoritesStoreIntent
 
     data object ClearFavorites: FavoritesStoreIntent
-
-    fun needSave(): Boolean = this !is ApplySwitchPoet
+    data class NavigateAndSwitch(val bookmark: Bookmark): FavoritesStoreIntent
 }
 
 sealed interface FavoritesStoreEffect {
@@ -36,23 +39,28 @@ sealed interface FavoritesStoreEffect {
     data class ShowDeleteConfirmation(val poetBookmark: PoetBookmark, val count: Int): FavoritesStoreEffect
 }
 
-class FavoritesStoreReducer(
-    val favoritesRepository: FavoritesRepository
-): Reducer<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect> {
+class FavoritesStoreReducer(): Reducer<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect> {
     override suspend fun reduce(
         state: FavoritesStoreState,
         intent: FavoritesStoreIntent
-    ): ReducerResult<FavoritesStoreState, out FavoritesStoreEffect?> = ReducerResult.build(
-        state = when(intent) {
+    ): ReducerResult<FavoritesStoreState, out FavoritesStoreEffect?> = ReducerResult.build {
+        newState = when(intent) {
             is FavoritesStoreIntent.AddPoem -> state.addPoem(intent.bookmark)
             is FavoritesStoreIntent.DeletePoem ->  state.deletePoem(intent.bookmark)
+            is FavoritesStoreIntent.SwitchPoem -> when(state.contains(intent.bookmark)) {
+                true -> state.deletePoem(intent.bookmark)
+                false -> state.addPoem(intent.bookmark)
+            }
             is FavoritesStoreIntent.ApplySwitchPoet -> state
             is FavoritesStoreIntent.AddPoet -> state.addPoet(intent.poetBookmark)
             is FavoritesStoreIntent.DeletePoet -> state.deletePoet(intent.poetBookmark)
             is FavoritesStoreIntent.ClearFavorites -> FavoritesStoreState(mapOf())
-        }.also {
-            if(intent.needSave()) { favoritesRepository.saveFavorites(it) }
-        },
+            is FavoritesStoreIntent.NavigateAndSwitch -> state.also {
+                val pageStore: PageStore by di.instance()
+                pageStore.sendIntent(PageStoreIntent.NavigateAndSwitch(intent.bookmark))
+            }
+        }
+
         effect = when(intent) {
             is FavoritesStoreIntent.ApplySwitchPoet -> {
                 val poemsInFavoritesSize = state.value[intent.poetBookmark]?.size ?: 0
@@ -70,7 +78,7 @@ class FavoritesStoreReducer(
             }
             else -> null
         }
-    )
+    }
 }
 
 class FavoritesStore(
@@ -78,9 +86,19 @@ class FavoritesStore(
 ): Store<FavoritesStoreState, FavoritesStoreIntent, FavoritesStoreEffect>(
     defaultState = FavoritesStoreState(mapOf()),
     initialiseState = { favoritesRepository.getFavorites().toFavoritesStoreState() },
-    reducer = FavoritesStoreReducer(favoritesRepository)
+    reducer = FavoritesStoreReducer()
 ) {
     fun contains(bookmark: Bookmark): Boolean = state.value.contains(bookmark)
+
+    init {
+        launchAfterInit { savingDaemon(favoritesRepository) }
+    }
+
+    suspend fun savingDaemon(favoritesRepository: FavoritesRepository) {
+        state.collect { sequence ->
+            if(stateIsInit) { favoritesRepository.saveFavorites(sequence) }
+        }
+    }
 }
 
 //models

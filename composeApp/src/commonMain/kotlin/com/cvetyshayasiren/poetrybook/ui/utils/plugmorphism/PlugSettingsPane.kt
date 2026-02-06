@@ -1,28 +1,37 @@
 package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardOptionKey
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.KeyboardOptionKey
+import androidx.compose.material.icons.rounded.People
+import androidx.compose.material.icons.rounded.SortByAlpha
+import androidx.compose.material.icons.rounded.Stream
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.domain.models.style.ThemeMode
 import com.cvetyshayasiren.poetrybook.domain.models.style.random
+import com.cvetyshayasiren.poetrybook.ui.store.BundleBookmark
 import com.cvetyshayasiren.poetrybook.ui.store.RandomStore
 import com.cvetyshayasiren.poetrybook.ui.store.RandomStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
@@ -40,13 +49,16 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
 
     val colors = remember { listOf(Color.Green, Color.Red, Color.Yellow) }
 
-    PlugCommonPane(modifier.verticalScroll(rememberScrollState()), style, "SETTINGS") {
+    PlugCommonPane(modifier
+        .fillMaxSize()
+        .padding(horizontal = 24.dp)
+        .verticalScroll(rememberScrollState()), style, "SETTINGS"
+    ) {
 
         FlowRow(
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
             horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
         ) {
-
             IsmStyle.entries.forEach { ismStyle ->
                 val borderColor by animateColorAsState(if(styleState.value.ismStyle == ismStyle)
                     MaterialTheme.colorScheme.tertiary else Color.Transparent
@@ -113,69 +125,130 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
             horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
         ) {
-            val expanded = remember { mutableStateOf(false) }
+            val expandedPoemBehaviourMenu = remember { mutableStateOf(false) }
             ExposedDropdownMenuBox(
-                expanded = expanded.value,
-                onExpandedChange = { expanded.value = !expanded.value }
+                expanded = expandedPoemBehaviourMenu.value,
+                onExpandedChange = { expandedPoemBehaviourMenu.value = !expandedPoemBehaviourMenu.value }
             ) {
                 TextField(
                     modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true),
                     readOnly = true,
-                    value = "",
+                    value = randomState.value.randomState.randomPoemBehaviour.prettyName(),
                     onValueChange = { },
-                    label = { Text("Поэт") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
+                    label = { Text("поведение случайности") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPoemBehaviourMenu.value) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors()
                 )
-
                 ExposedDropdownMenu(
-                    expanded = expanded.value,
-                    onDismissRequest = { expanded.value = false }
+                    expanded = expandedPoemBehaviourMenu.value,
+                    onDismissRequest = { expandedPoemBehaviourMenu.value = false }
                 ) {
-                    randomState.value.poets.forEach { poet ->
+                    DropdownMenuItem(
+                        modifier = Modifier.border(
+                            width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.RandomPoet)
+                                MaterialTheme.colorScheme.tertiary else Color.Transparent)
+                        ),
+                        onClick = {
+                            expandedPoemBehaviourMenu.value = !expandedPoemBehaviourMenu.value
+                            randomStore.sendIntent(RandomStoreIntent.SetNextPoemBehaviour(RandomPoemBehaviour.RandomPoet))
+                        },
+                        text = { Text("случайно") }
+                    )
+
+                    if(randomState.value.favoritesIsNotEmpty()) {
                         DropdownMenuItem(
+                            modifier = Modifier.border(
+                                width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites)
+                                    MaterialTheme.colorScheme.tertiary else Color.Transparent)
+                            ),
                             onClick = {
-                                randomStore.sendIntent(RandomStoreIntent
-                                    .SetNextPoemBehaviour(RandomPoemBehaviour.CertainPoet(poet)))
+                                expandedPoemBehaviourMenu.value = !expandedPoemBehaviourMenu.value
+                                randomStore.sendIntent(RandomStoreIntent.SetNextPoemBehaviour(RandomPoemBehaviour.FromFavorites))
                             },
-                            text = { Text(poet.name) }
+                            text = { Text("избранное") }
                         )
                     }
+
+                    DropdownMenuItem(
+                        modifier = Modifier.border(
+                            width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.SamePoet)
+                                MaterialTheme.colorScheme.tertiary else Color.Transparent)
+                        ),
+                        onClick = {
+                            expandedPoemBehaviourMenu.value = !expandedPoemBehaviourMenu.value
+                            randomStore.sendIntent(RandomStoreIntent.SetNextPoemBehaviour(RandomPoemBehaviour.SamePoet))
+                        },
+                        text = { Text("повторять") }
+                    )
+                    DropdownMenuItem(
+                        modifier = Modifier.border(
+                            width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.CertainPoet)
+                                MaterialTheme.colorScheme.tertiary else Color.Transparent)
+                        ),
+                        onClick = {
+                            expandedPoemBehaviourMenu.value = !expandedPoemBehaviourMenu.value
+                            randomStore.sendIntent(
+                                RandomStoreIntent.SetNextPoemBehaviour(
+                                    RandomPoemBehaviour.CertainPoet(
+                                        poetBookmark = randomState.value.poetsBundle.first()
+                                    )
+                                )
+                            )
+                        },
+                        text = { Text("выбрать") }
+                    )
                 }
             }
 
-            Button(
-                border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites)
-                        MaterialTheme.colorScheme.tertiary else Color.Transparent)),
-                onClick = {
-                    randomStore.sendIntent(RandomStoreIntent
-                        .SetNextPoemBehaviour(RandomPoemBehaviour.FromFavorites))
-                },
+            AnimatedVisibility(
+                visible = randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.CertainPoet
             ) {
-                Text("favorites")
-            }
-            Button(
-                border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.RandomPoet)
-                        MaterialTheme.colorScheme.tertiary else Color.Transparent)),
-                onClick = {
-                    randomStore.sendIntent(RandomStoreIntent
-                        .SetNextPoemBehaviour(RandomPoemBehaviour.RandomPoet))
-                },
-            ) {
-                Text("random")
-            }
-            Button(
-                border = BorderStroke(
-                    width = 4.dp, color = (if(randomState.value.randomState.randomPoemBehaviour is RandomPoemBehaviour.SamePoet)
-                        MaterialTheme.colorScheme.tertiary else Color.Transparent)),
-                onClick = {
-                    randomStore.sendIntent(RandomStoreIntent
-                        .SetNextPoemBehaviour(RandomPoemBehaviour.SamePoet))
-                },
-            ) {
-                Text("same")
+                val expandedCertainPoetMenu = remember { mutableStateOf(false) }
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedCertainPoetMenu.value,
+                    onExpandedChange = { expandedCertainPoetMenu.value = !expandedCertainPoetMenu.value }
+                ) {
+                    TextField(
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true),
+                        readOnly = true,
+                        value = randomState.value.poetsBundle.option(),
+                        onValueChange = { },
+                        label = { Text("поэт") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPoemBehaviourMenu.value) },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedCertainPoetMenu.value,
+                        onDismissRequest = { expandedCertainPoetMenu.value = false }
+                    ) {
+                        randomState.value.poetsBundle.fullList().forEach { poetBookmark ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    expandedCertainPoetMenu.value = !expandedCertainPoetMenu.value
+                                    randomStore.sendIntent(
+                                        RandomStoreIntent.SetNextPoemBehaviour(
+                                            RandomPoemBehaviour.CertainPoet(poetBookmark = poetBookmark)
+                                        )
+                                    )
+                                },
+                                text = { Text(poetBookmark.name) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = when(poetBookmark.type) {
+                                            BundleBookmark.Type.OPTION -> Icons.Rounded.KeyboardOptionKey
+                                            BundleBookmark.Type.CURRENT -> Icons.Rounded.People
+                                            BundleBookmark.Type.FAVORITE -> Icons.Rounded.Favorite
+                                            BundleBookmark.Type.HISTORY -> Icons.Rounded.History
+                                            BundleBookmark.Type.OTHER -> Icons.Rounded.SortByAlpha
+                                        },
+                                        contentDescription = "set ${poetBookmark.name}"
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.height(48.dp))

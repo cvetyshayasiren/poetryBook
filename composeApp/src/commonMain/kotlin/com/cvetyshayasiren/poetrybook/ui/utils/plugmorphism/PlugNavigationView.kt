@@ -81,7 +81,7 @@ fun PlugNavigationView(
                         Destination.Favorites -> Icons.Filled.Favorite
                         Destination.History -> Icons.Filled.History
                         Destination.Page -> Icons.Filled.Pages
-                        Destination.Search -> Icons.Filled.Search
+                        is Destination.Search -> Icons.Filled.Search
                         Destination.Settings -> Icons.Filled.Settings
                     },
                     contentDescription = null,

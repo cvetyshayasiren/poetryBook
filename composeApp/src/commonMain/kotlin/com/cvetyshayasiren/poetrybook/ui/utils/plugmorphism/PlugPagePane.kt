@@ -2,11 +2,13 @@ package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.runtime.Composable
@@ -28,7 +30,7 @@ import org.kodein.di.instance
 fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
     val pageStore: PageStore by di.instance()
     val state = pageStore.state.collectAsState()
-    PlugCommonPane(modifier, style, "PAGE") {
+    PlugCommonPane(modifier.fillMaxSize().padding(horizontal = 24.dp), style, "PAGE") {
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             targetState = state.value
@@ -39,17 +41,41 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                 is PageStoreState.Prepared -> {
                     Column(
                         modifier = Modifier
-                            .padding(48.dp)
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(
-                            text = pageState.page.poetName,
-                            fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
-                            textDecoration = TextDecoration.Underline
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier.clickable {
+                                    pageStore.sendIntent(
+                                        PageStoreIntent.NavigateToSearch(
+                                            pageState.page.toBasicPoetBookmark()
+                                        )
+                                    )
+
+                                },
+                                text = pageState.page.poetName,
+                                fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
+                                textDecoration = TextDecoration.Underline
+                            )
+
+                            IconButton(
+                                onClick = {
+                                    pageStore.sendIntent(PageStoreIntent.NavigateToSearch())
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "search",
+                                )
+                            }
+                        }
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -91,7 +117,7 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                             ) {
                                 Text(">")
                             }
-                            Spacer(modifier = Modifier.height(96.dp))
+                            Spacer(modifier = Modifier.height(400.dp))
                         }
                     }
                 }

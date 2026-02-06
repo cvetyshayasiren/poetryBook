@@ -19,7 +19,8 @@ import org.kodein.di.instance
 sealed interface SearchStoreState {
     data class Book(
         val book: BookSequence,
-        val sorting: BookSequenceSorting = BookSequenceSorting.Alphabet
+        val sorting: BookSequenceSorting = BookSequenceSorting.Alphabet,
+        val selectedPoet: PoetBookmark? = null
     ): SearchStoreState {
         fun switchSorting(): Book {
             val nextSort = this.sorting.nextSort()
@@ -28,18 +29,22 @@ sealed interface SearchStoreState {
     }
     data class SimpleSearchResult(val searchResult: SearchResultBookmarks): SearchStoreState
     data class HardSearchResult(val searchResult: Flow<SearchResultBookmark>): SearchStoreState
+
+    fun selectedPoetIndex(): Int? = when(this) {
+        is Book -> book.value.keys.map { it.toBasicPoetBookmark() }.indexOf(selectedPoet?.toBasicPoetBookmark()).let {
+            if(it == -1) null else it
+        }
+        else -> null
+    }
 }
 
 sealed interface SearchStoreIntent {
     data object SwitchSorting: SearchStoreIntent
-
     data class SimpleSearchUserInput(val input: String): SearchStoreIntent
-
     data class HardSearchUserInput(val input: String): SearchStoreIntent
-
-    data object CancelSearch: SearchStoreIntent
-
+    data class SetBook(val selectedPoet: PoetBookmark): SearchStoreIntent
     data class HardSearchComplete(val matches: Int): SearchStoreIntent
+    data class NavigateToPageAndSwitch(val bookmark: Bookmark): SearchStoreIntent
 }
 
 sealed interface SearchStoreEffect {
@@ -51,8 +56,8 @@ class SearchStoreReducer:
     override suspend fun reduce(
         state: SearchStoreState,
         intent: SearchStoreIntent
-    ): ReducerResult<SearchStoreState, out SearchStoreEffect?> = ReducerResult.build(
-        state = when(intent) {
+    ): ReducerResult<SearchStoreState, out SearchStoreEffect?> = ReducerResult.build {
+        newState = when(intent) {
             is SearchStoreIntent.SwitchSorting -> {
                 when(state is SearchStoreState.Book) {
                     true -> state.switchSorting()
@@ -66,10 +71,10 @@ class SearchStoreReducer:
                     searchResult = book.simpleSearch(intent.input)
                 )
             }
-            SearchStoreIntent.CancelSearch -> {
+            is SearchStoreIntent.SetBook -> {
                 val poetryBookStore: PoetryBookStore by di.instance()
                 val book = poetryBookStore.getBook()
-                SearchStoreState.Book(book.toBookSequence())
+                SearchStoreState.Book(book.toBookSequence(), selectedPoet = intent.selectedPoet)
             }
             is SearchStoreIntent.HardSearchUserInput -> {
                 val poetryBookStore: PoetryBookStore by di.instance()
@@ -85,12 +90,16 @@ class SearchStoreReducer:
                 )
             }
             is SearchStoreIntent.HardSearchComplete -> state
-        },
+            is SearchStoreIntent.NavigateToPageAndSwitch -> state.also {
+                val pageStore: PageStore by di.instance()
+                pageStore.sendIntent(PageStoreIntent.NavigateAndSwitch(intent.bookmark))
+            }
+        }
         effect = when(intent) {
             is SearchStoreIntent.HardSearchComplete -> SearchStoreEffect.HardSearchComplete(intent.matches)
             else -> null
         }
-    )
+    }
 }
 
 class SearchStore: Store<SearchStoreState, SearchStoreIntent, SearchStoreEffect>(

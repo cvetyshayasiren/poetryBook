@@ -26,10 +26,10 @@ interface StoreLogger {
         )
     }
 
-    fun logStoreStateStart(storeName: String) {
+    fun logStoreStateResume(storeName: String) {
         sendLog(
             subject = storeName,
-            action = "start state"
+            action = "resume state"
         )
     }
 
@@ -70,7 +70,7 @@ interface StoreLogger {
     ) {
         val time = currentTime().prettyTimeString()
         val uuid = uuid?.let { " (logger UUID: $it)" } ?: ""
-        val message = "[$subject] $action at $time$uuid"
+        val message = "$time$uuid[$subject] $action"
         val error = error?.let { "and got the error:\n$error" }
         when(error == null) {
             true -> Logger.i(tag ?: "") { message }

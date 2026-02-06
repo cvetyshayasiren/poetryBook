@@ -14,8 +14,8 @@ fun PlugCommonPane(
     modifier: Modifier,
     style: IsmStyle,
     label: String,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Center,
-    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable (ColumnScope.() -> Unit) = { }
 ) {
     Column(
