@@ -98,7 +98,17 @@ class RandomStore(
         val favoritesStore: FavoritesStore by di.instance()
         favoritesStore.state.collect { favoritesStoreState ->
             updateState { oldState ->
-                oldState.refreshBundleFavorites(favoritesStoreState = favoritesStoreState)
+                oldState.refreshBundleFavorites(favoritesStoreState = favoritesStoreState).let { candidateState ->
+                    when(favoritesStoreState.value.isEmpty() &&
+                            candidateState.randomState.randomPoemBehaviour is RandomPoemBehaviour.FromFavorites) {
+                        true -> candidateState.copy(
+                            randomState = candidateState.randomState.copy(
+                                randomPoemBehaviour = RandomPoemBehaviour.RandomPoet
+                            )
+                        )
+                        false -> candidateState
+                    }
+                }
             }
         }
     }
@@ -124,8 +134,9 @@ data class PoetsBundle(
 ) {
     fun fullList(): BundleBookmarks {
         val optionList = if(option != null) listOf(option) else emptyList()
-        val currentPoetList = if(currentPoet != null) listOf(currentPoet) else emptyList()
-        return optionList + currentPoetList + favoritePoets + historyPoets + otherPoets
+        val currentPoetList = if(currentPoet != null && currentPoet.id != option?.id) listOf(currentPoet) else emptyList()
+        return optionList + currentPoetList + favoritePoets +
+                historyPoets.filter { his -> his.id !in favoritePoets.map { it.id } } + otherPoets
     }
 
     fun first(): BundleBookmark =

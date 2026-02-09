@@ -32,14 +32,15 @@ value class Sequence<K: PoetBookmark, E: Bookmark>(val value: Map<out K, LinkedH
 typealias BasicSequence = Sequence<PoetBookmark.Basic, Bookmark.Basic>
 
 fun Sequence<out PoetBookmark, out Bookmark>.random(exclude: Bookmark? = null): Bookmark =
-    value.values.map { it.toList() }.reduce { a, b -> a + b }.run {
-        when(exclude == null) {
-            true -> random()
-            false -> randomExcludeBy { poemBookmark ->
-                exclude.poetId == poemBookmark.poetId && exclude.poemId == poemBookmark.poemId
+    value.also { require(it.isNotEmpty()) { "sequence is empty" } }.values
+        .map { it.toList() }.reduce { a, b -> a + b }.run {
+            when(exclude == null) {
+                true -> random()
+                false -> randomExcludeBy { poemBookmark ->
+                    exclude.poetId == poemBookmark.poetId && exclude.poemId == poemBookmark.poemId
+                }
             }
         }
-    }
 
 fun Sequence<out PoetBookmark, out Bookmark>.contains(bookmark: Bookmark): Boolean =
     this.value.mapKeys { it.key.id }[bookmark.poetId]?.map { it.poemId }?.contains(bookmark.poemId) ?: false

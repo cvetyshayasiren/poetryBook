@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardOptionKey
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.KeyboardOptionKey
@@ -236,7 +237,7 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
                                 leadingIcon = {
                                     Icon(
                                         imageVector = when(poetBookmark.type) {
-                                            BundleBookmark.Type.OPTION -> Icons.Rounded.KeyboardOptionKey
+                                            BundleBookmark.Type.OPTION -> Icons.Rounded.Check
                                             BundleBookmark.Type.CURRENT -> Icons.Rounded.People
                                             BundleBookmark.Type.FAVORITE -> Icons.Rounded.Favorite
                                             BundleBookmark.Type.HISTORY -> Icons.Rounded.History

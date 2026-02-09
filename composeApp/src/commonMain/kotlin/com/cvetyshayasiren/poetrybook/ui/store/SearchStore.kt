@@ -1,5 +1,11 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
@@ -24,7 +30,7 @@ sealed interface SearchStoreState {
     ): SearchStoreState {
         fun switchSorting(): Book {
             val nextSort = this.sorting.nextSort()
-            return this.copy(book = nextSort.sort(book), sorting = nextSort)
+            return Book(book = nextSort.sort(book), sorting = nextSort, selectedPoet = null)
         }
     }
     data class SimpleSearchResult(val searchResult: SearchResultBookmarks): SearchStoreState
@@ -124,7 +130,25 @@ data class SearchResultBookmark(
     data class SearchResult(
         val text: String,
         val ranges: List<IntRange>
-    )
+    ) {
+        @Composable
+        fun getAnnotatedString(
+            commonStyle: SpanStyle = SpanStyle(color = MaterialTheme.colorScheme.onSurface),
+            accentStyle: SpanStyle = SpanStyle(color = MaterialTheme.colorScheme.error),
+        ) = buildAnnotatedString {
+            val ranges = ranges.flatten()
+            text.forEachIndexed { index, char ->
+                withStyle(
+                    style = when(index in ranges) {
+                        true -> accentStyle
+                        false -> commonStyle
+                    }
+                ) {
+                    append(char)
+                }
+            }
+        }
+    }
 }
 
 typealias SearchResultBookmarks = List<SearchResultBookmark>

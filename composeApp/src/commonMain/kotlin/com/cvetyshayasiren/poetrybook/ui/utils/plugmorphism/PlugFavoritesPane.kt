@@ -69,7 +69,7 @@ fun PlugFavoritesPane(modifier: Modifier, style: IsmStyle) {
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.Start)
                     ) {
                         val favoriteAlpha by animateFloatAsState(if(poetBookmark.isInFavorites) 1f else .2f)
                         IconButton(
@@ -98,9 +98,11 @@ fun PlugFavoritesPane(modifier: Modifier, style: IsmStyle) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
+                            modifier = Modifier.weight(8f),
                             text = titledPoemBookmark.title
                         )
                         IconButton(
+                            modifier = Modifier.weight(2f),
                             onClick = {
                                 favoritesStore.sendIntent(FavoritesStoreIntent.DeletePoem(titledPoemBookmark))
                             }

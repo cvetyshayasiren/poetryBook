@@ -1,18 +1,22 @@
 package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -38,10 +42,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onLayoutRectChanged
 import androidx.compose.ui.layout.onVisibilityChanged
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.store.BookSequenceSorting
@@ -65,7 +78,6 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
     LaunchedEffect(Unit) {
         searchStore.effect.collect { effect ->
             if(effect is SearchStoreEffect.HardSearchComplete) {
-                println("SNACK")
                 searchCompleteEffect.value = effect
                 delay(2000)
                 searchCompleteEffect.value = null
@@ -75,17 +87,19 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
 
     if(searchCompleteEffect.value != null) {
         Snackbar(
-            modifier = Modifier.wrapContentHeight(),
-            shape = RoundedCornerShape(24.dp),
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            modifier = Modifier
+                .zIndex(1f)
+                .wrapContentSize()
+                .padding(24.dp),
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            shape = RoundedCornerShape(24.dp)
         ) {
-            Text("search res ${searchCompleteEffect.value}")
+            Text(text = "search res ${searchCompleteEffect.value}")
         }
     }
 
     PlugCommonPane(modifier.fillMaxSize().padding(horizontal = 24.dp), style, "SEARCH") {
-
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = userInput.value,
@@ -120,22 +134,17 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
                             )
                         }
                     }
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .background(MaterialTheme.colorScheme.surfaceContainer),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        if(userInput.value.isNotEmpty()) {
-                            Button(
-                                onClick = {
-                                    searchStore.sendIntent(SearchStoreIntent.HardSearchUserInput(userInput.value))
-                                }
-                            ) {
-                                Text("искать")
+                    if(userInput.value.isNotEmpty()) {
+                        Button(
+                            onClick = {
+                                searchStore.sendIntent(SearchStoreIntent.HardSearchUserInput(userInput.value))
                             }
+                        ) {
+                            Text("искать")
                         }
+                    }
+                    if(state is SearchStoreState.SimpleSearchResult) {
+                        Text("simple №: ${state.searchResult.size}")
                     }
                 }
 
@@ -167,8 +176,8 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
                                     val isActive = remember { mutableStateOf(false) }
                                     Row(
                                         modifier = Modifier
-                                            .onLayoutRectChanged { layout ->
-                                                isActive.value = layout.boundsInRoot.top == 152
+                                            .onGloballyPositioned { coordinates ->
+                                                isActive.value = coordinates.boundsInParent().top.toInt() == 0
                                             }
                                             .fillMaxWidth()
                                             .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -207,7 +216,10 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
                                                         }
                                                         .fillMaxWidth()
                                                         .background(MaterialTheme.colorScheme.secondaryContainer)
-                                                        .padding(12.dp),
+                                                        .padding(12.dp)
+                                                        .clickable {
+                                                            searchStore.sendIntent(SearchStoreIntent.NavigateToPageAndSwitch(titledBookBookmark))
+                                                        },
                                                     verticalAlignment = Alignment.CenterVertically,
                                                     horizontalArrangement = Arrangement.SpaceBetween
                                                 ) {
@@ -238,14 +250,16 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
                         }
 
                         LazyColumn {
+                            item {
+                                Text("hard №: ${hardResults.size}")
+                            }
                             items(hardResults) { bookmark ->
-                                Text(
-                                    text = bookmark.poetName.text,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    text = bookmark.title.text,
-                                    color = MaterialTheme.colorScheme.secondary
+                                PlugSearchResView(
+                                    modifier = Modifier
+                                        .clickable {
+                                            searchStore.sendIntent(SearchStoreIntent.NavigateToPageAndSwitch(bookmark))
+                                        },
+                                    bookmark = bookmark
                                 )
                             }
                         }
@@ -253,16 +267,55 @@ fun PlugSearchPane(modifier: Modifier, style: IsmStyle) {
                     is SearchStoreState.SimpleSearchResult -> {
                         LazyColumn {
                             items(state.searchResult) { bookmark ->
-                                Text(
-                                    text = bookmark.poetName.text,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    text = bookmark.title.text,
-                                    color = MaterialTheme.colorScheme.secondary
+                                PlugSearchResView(
+                                    modifier = Modifier
+                                        .clickable {
+                                            searchStore.sendIntent(SearchStoreIntent.NavigateToPageAndSwitch(bookmark))
+                                        },
+                                    bookmark = bookmark
                                 )
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PlugSearchResView(
+    modifier: Modifier = Modifier,
+    bookmark: SearchResultBookmark
+) {
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(12.dp)
+            .then(modifier),
+    ) {
+        Text(text = bookmark.poetName.getAnnotatedString())
+        Text(text = bookmark.title.getAnnotatedString())
+        bookmark.text?.let { text ->
+            val expanded = remember { mutableStateOf(false) }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                    .padding(12.dp)
+                    .clickable {
+                        expanded.value = !expanded.value
+                    }
+            ) {
+                AnimatedContent(targetState = expanded.value) {
+                    when(it) {
+                        true -> Text(text.getAnnotatedString())
+                        false -> Text("раскрыть текст")
                     }
                 }
             }

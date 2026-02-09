@@ -158,7 +158,10 @@ data class PageBookmark(
                 RandomPoemBehaviour.FromFavorites -> {
                     val favoritesStore: FavoritesStore by di.instance()
                     val state = favoritesStore.state.value
-                    state.random(exclude = current).toPageBookmark()
+                    when(state.value.isNotEmpty()) {
+                        true -> state.random(exclude = current).toPageBookmark()
+                        false -> book.randomPoem(exclude = current).toPageBookmark()
+                    }
                 }
             }
         }

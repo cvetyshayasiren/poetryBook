@@ -2,6 +2,10 @@ package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -33,8 +37,15 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
     PlugCommonPane(modifier.fillMaxSize().padding(horizontal = 24.dp), style, "PAGE") {
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
-            targetState = state.value
-        ) {pageState ->
+            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+            targetState = state.value,
+            contentKey = { it ->
+                when(it) {
+                    PageStoreState.Loading -> { it.hashCode() }
+                    is PageStoreState.Prepared -> { it.page.text }
+                }
+            }
+        ) { pageState ->
             when(pageState) {
                 PageStoreState.Loading -> Box(contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(modifier = Modifier.size(250.dp)) }
