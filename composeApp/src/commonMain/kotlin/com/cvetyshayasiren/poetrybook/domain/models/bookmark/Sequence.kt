@@ -2,7 +2,6 @@ package com.cvetyshayasiren.poetrybook.domain.models.bookmark
 
 import com.cvetyshayasiren.poetrybook.domain.utils.randomExcludeBy
 import com.cvetyshayasiren.poetrybook.domain.utils.toLinkedHashSet
-import kotlin.collections.get
 import kotlin.jvm.JvmInline
 
 @JvmInline

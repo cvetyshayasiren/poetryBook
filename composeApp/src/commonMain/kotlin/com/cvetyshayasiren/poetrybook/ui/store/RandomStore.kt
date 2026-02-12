@@ -1,20 +1,16 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poet.getPoetName
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
-import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
 import com.cvetyshayasiren.poetrybook.domain.repository.RandomStateRepository
 import com.cvetyshayasiren.poetrybook.ui.store.BundleBookmark.Type
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import kotlinx.coroutines.launch
 import org.kodein.di.instance
-import kotlin.getValue
 
 data class RandomStoreState(
     val randomState: RandomState,
@@ -28,6 +24,9 @@ sealed interface RandomStoreIntent {
     class SetIsRandomiseSeed(val value: Boolean): RandomStoreIntent
     class SetIsRandomiseIsm(val value: Boolean): RandomStoreIntent
     class SetIsRandomiseThemeMod(val value: Boolean): RandomStoreIntent
+    class SetIsRandomisePaletteStyle(val value: Boolean): RandomStoreIntent
+    class SetIsRandomiseColorSpecVersion(val value: Boolean): RandomStoreIntent
+    data object SetDefault: RandomStoreIntent
 }
 
 sealed interface RandomStoreEffect
@@ -44,6 +43,11 @@ class RandomStoreReducer(): Reducer<RandomStoreState, RandomStoreIntent, RandomS
                 state.copy(randomState = state.randomState.copy(isRandomiseSeed = intent.value))
             is RandomStoreIntent.SetIsRandomiseThemeMod ->
                 state.copy(randomState = state.randomState.copy(isRandomiseThemeMode = intent.value))
+            is RandomStoreIntent.SetIsRandomisePaletteStyle ->
+                state.copy(randomState = state.randomState.copy(isRandomisePaletteStyle = intent.value))
+            is RandomStoreIntent.SetIsRandomiseColorSpecVersion ->
+                state.copy(randomState = state.randomState.copy(isRandomiseColorSpecVersion = intent.value))
+            is RandomStoreIntent.SetDefault -> RandomStoreState(RandomState(), PoetsBundle())
             is RandomStoreIntent.SetNextPoemBehaviour ->
                 state.copy(
                     randomState = state.randomState.copy(randomPoemBehaviour = intent.nextPoemBehaviour),

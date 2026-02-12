@@ -11,19 +11,25 @@ data class DataRandomState(
     val isRandomiseSeed: Boolean,
     val isRandomiseIsm: Boolean,
     val isRandomiseThemeMode: Boolean,
+    val isRandomisePaletteStyle: Boolean,
+    val isRandomiseColorSpecVersion: Boolean
 ) {
     fun toRandomState() = RandomState(
         randomPoemBehaviour = this.randomPoemBehaviour.toRandomPoemBehaviour(),
         isRandomiseSeed = this.isRandomiseSeed,
         isRandomiseIsm = this.isRandomiseIsm,
-        isRandomiseThemeMode = this.isRandomiseThemeMode
+        isRandomiseThemeMode = this.isRandomiseThemeMode,
+        isRandomisePaletteStyle = this.isRandomisePaletteStyle,
+        isRandomiseColorSpecVersion = this.isRandomiseColorSpecVersion
     )
     companion object {
         fun fromRandomState(state: RandomState): DataRandomState = DataRandomState(
             randomPoemBehaviour = DataRandomPoemBehaviour.fromRandomPoemBehaviour(state.randomPoemBehaviour),
             isRandomiseSeed = state.isRandomiseSeed,
             isRandomiseIsm = state.isRandomiseIsm,
-            isRandomiseThemeMode = state.isRandomiseThemeMode
+            isRandomiseThemeMode = state.isRandomiseThemeMode,
+            isRandomisePaletteStyle = state.isRandomisePaletteStyle,
+            isRandomiseColorSpecVersion = state.isRandomiseColorSpecVersion
         )
     }
 }

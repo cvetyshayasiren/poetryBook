@@ -1,8 +1,5 @@
 package com.cvetyshayasiren.poetrybook.ui.navigation
 
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
-
 typealias Destinations = List<Destination>
 
 fun Destinations.current() = last()

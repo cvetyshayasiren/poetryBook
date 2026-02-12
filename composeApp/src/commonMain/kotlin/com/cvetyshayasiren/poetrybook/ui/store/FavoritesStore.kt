@@ -1,23 +1,16 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicSequence
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.add
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.delete
-import com.cvetyshayasiren.poetrybook.domain.models.poet.*
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.*
+import com.cvetyshayasiren.poetrybook.domain.models.poet.getPoem
+import com.cvetyshayasiren.poetrybook.domain.models.poet.getPoemsSize
+import com.cvetyshayasiren.poetrybook.domain.models.poet.getPoetName
 import com.cvetyshayasiren.poetrybook.domain.repository.FavoritesRepository
 import com.cvetyshayasiren.poetrybook.domain.utils.toLinkedHashSet
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 import org.kodein.di.instance
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.contains
-import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
-import kotlinx.coroutines.launch
 
 typealias FavoritesStoreState = Sequence<FavoritePoetBookmark, FavoriteBookmark>
 

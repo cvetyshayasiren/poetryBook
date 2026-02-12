@@ -1,12 +1,10 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import androidx.compose.runtime.structuralEqualityPolicy
-import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.random
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.contains
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.random
 import com.cvetyshayasiren.poetrybook.domain.models.poem.Poem
 import com.cvetyshayasiren.poetrybook.domain.models.poem.toBasicPoemBookmark
 import com.cvetyshayasiren.poetrybook.domain.models.poet.getPoem
@@ -18,8 +16,6 @@ import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
 sealed interface PageStoreState {
@@ -141,7 +137,9 @@ data class PageBookmark(
                     intent = StyleStoreIntent.RandomiseStyle(
                         isRandomiseIsm = randomState.isRandomiseIsm,
                         isRandomiseSeed = randomState.isRandomiseSeed,
-                        isRandomiseThemeMode = randomState.isRandomiseThemeMode
+                        isRandomiseThemeMode = randomState.isRandomiseThemeMode,
+                        isRandomisePaletteStyle = randomState.isRandomisePaletteStyle,
+                        isRandomiseColorSpecVersion = randomState.isRandomiseColorSpecVersion,
                     )
                 )
             }

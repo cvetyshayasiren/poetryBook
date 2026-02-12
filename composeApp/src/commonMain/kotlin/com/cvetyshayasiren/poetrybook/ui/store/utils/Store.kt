@@ -2,28 +2,33 @@ package com.cvetyshayasiren.poetrybook.ui.store.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.contracts.Effect
 
 abstract class Store<S, I, E>(
     defaultState: S,
-    initialiseState: (suspend () -> S)? = null,
     sharingStarted: SharingStarted =
         SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000, replayExpirationMillis = 5000),
-    private val onResume: ((Store<S, I, E>) -> Unit)? = null,
     private val reducer: Reducer<S, I, E>,
+    private val initialiseState: (suspend () -> S)? = null,
+    private val onStateStart: ((Store<S, I, E>) -> Unit)? = null,
+    private val onStateResume: ((Store<S, I, E>) -> Unit)? = null,
+    private val onEffectStart: ((Store<S, I, E>) -> Unit)? = null,
+    private val onEffectResume: ((Store<S, I, E>) -> Unit)? = null,
     private val logger: StoreLogger? = StoreLogger.Default()
 ): ViewModel() {
     private val storeName = this::class.simpleName.toString()
-
     init { logger?.logStoreInitialised(storeName) }
 
     protected var stateIsInit: Boolean = false
+        private set
+    protected var stateIsStarted: Boolean = false
         private set
 
     private val intentsChannel = Channel<I>(capacity = Channel.UNLIMITED)
@@ -33,17 +38,16 @@ abstract class Store<S, I, E>(
     val state: StateFlow<S> = _state
         .asStateFlow()
         .onStart {
-            when(stateIsInit) {
+            when(stateIsStarted) {
                 true -> {
                     logger?.logStoreStateResume(storeName = storeName)
-                    onResume?.invoke(this@Store)
+                    onStateResume?.invoke(this@Store)
                 }
                 false -> {
-                    stateMutex.withLock {
-                        initialiseState?.let { _state.emit(it()) }
-                        stateIsInit = true
-                    }
-                    logger?.logStoreStateInitialised(storeName = storeName)
+                    waitUntilInitialized()
+                    stateIsStarted = true
+                    logger?.logStoreStateStart(storeName = storeName)
+                    onStateStart?.invoke(this@Store)
                 }
             }
         }
@@ -54,10 +58,36 @@ abstract class Store<S, I, E>(
             initialValue = defaultState
         )
 
+    init {
+        CoroutineScope(Dispatchers.Default).launch {
+            stateMutex.withLock {
+                if(!stateIsInit) {
+                    initialiseState?.let { _state.emit(it()) }
+                    stateIsInit = true
+                }
+            }
+            logger?.logStoreStateInitialised(storeName = storeName)
+        }
+    }
+
+    protected var effectIsStarted: Boolean = false
+        private set
     private val _effect: MutableSharedFlow<E> = MutableSharedFlow<E>()
     val effect: SharedFlow<E> = _effect
         .asSharedFlow()
-        .onStart { logger?.logStoreEffectStart(storeName = storeName) }
+        .onStart {
+            when(effectIsStarted) {
+                true -> {
+                    logger?.logStoreEffectResume(storeName = storeName)
+                    onEffectResume?.invoke(this@Store)
+                }
+                false -> {
+                    effectIsStarted = true
+                    logger?.logStoreEffectStart(storeName = storeName)
+                    onEffectStart?.invoke(this@Store)
+                }
+            }
+        }
         .onCompletion { logger?.logStoreEffectCompletion(storeName = storeName, throwable = it) }
         .shareIn(
             scope = viewModelScope,
@@ -66,12 +96,12 @@ abstract class Store<S, I, E>(
 
     fun sendIntent(intent: I) {
         intentsChannel.trySend(intent)
-        val intentName = intent?.let { it::class.simpleName } ?: "null"
-        logger?.logStoreSendIntent(storeName = storeName, intentName = intentName)
+        logger?.logStoreSendIntent(storeName = storeName, intentName = getIntentName(intent))
     }
 
     private suspend fun consumeIntents() {
         intentsChannel.consumeAsFlow().collect { intent ->
+            logger?.logStoreConsumeIntent(storeName = storeName, intentName = getIntentName(intent))
             executeIntent(intent)
         }
     }
@@ -83,6 +113,7 @@ abstract class Store<S, I, E>(
             effect?.let { _effect.emit(it) }
             sideEffect?.invoke()
         }
+        logger?.logStoreExecuteIntent(storeName = storeName, intentName = getIntentName(intent))
     }
 
     protected suspend fun waitUntilInitialized(delay: Long = 1) {
@@ -108,6 +139,8 @@ abstract class Store<S, I, E>(
             block()
         }
     }
+
+    private fun getIntentName(intent: I): String = intent?.let { it::class.simpleName } ?: "null"
 
     init { launchAfterInit { consumeIntents() } }
 }

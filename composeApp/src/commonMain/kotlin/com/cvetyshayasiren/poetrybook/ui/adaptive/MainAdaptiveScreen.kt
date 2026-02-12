@@ -1,5 +1,6 @@
 package com.cvetyshayasiren.poetrybook.ui.adaptive
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
@@ -21,29 +22,34 @@ fun MainAdaptiveScreen() {
     val styleStore: StyleStore by di.instance()
     val styleState = styleStore.state.collectAsState()
     val isExpanded = WindowSizeClass.isExpanded()
-    val styleScreenBundle = styleState.value.ismStyle.getStyleScreenBundle()
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        MainNavigationScreen(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            styleScreenBundle = styleScreenBundle,
-            isExpanded = isExpanded
-        )
 
-        AnimatedVisibility(
-            visible = isExpanded
+    AnimatedContent(
+        targetState = styleState.value.ismStyle
+    ) { ismStyle ->
+        val styleScreenBundle = ismStyle.getStyleScreenBundle()
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            styleScreenBundle.SettingsPane(
+            MainNavigationScreen(
                 modifier = Modifier
-                    .width(360.dp)
-                    .fillMaxHeight()
-                    .animateContentSize()
+                    .weight(1f)
+                    .fillMaxHeight(),
+                styleScreenBundle = styleScreenBundle,
+                isExpanded = isExpanded
             )
+
+            AnimatedVisibility(
+                visible = isExpanded
+            ) {
+                styleScreenBundle.SettingsPane(
+                    modifier = Modifier
+                        .width(360.dp)
+                        .fillMaxHeight()
+                        .animateContentSize()
+                )
+            }
         }
     }
 }

@@ -6,8 +6,6 @@ import androidx.compose.runtime.collectAsState
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
 import com.materialkolor.DynamicMaterialTheme
-import com.materialkolor.PaletteStyle
-import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
 import org.kodein.di.instance
 
@@ -20,8 +18,8 @@ fun PoetryBookTheme(
 
     val dynamicThemeState = rememberDynamicMaterialThemeState(
         isDark = state.value.isDarkThemeMode(),
-        style = PaletteStyle.Vibrant,
-        specVersion = ColorSpec.SpecVersion.SPEC_2025,
+        style = state.value.paletteStyle,
+        specVersion = state.value.colorSpecVersion,
         seedColor = state.value.seedColor
     )
 

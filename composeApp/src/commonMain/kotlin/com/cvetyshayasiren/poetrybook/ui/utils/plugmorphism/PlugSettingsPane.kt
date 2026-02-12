@@ -2,29 +2,16 @@ package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardOptionKey
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.KeyboardOptionKey
-import androidx.compose.material.icons.rounded.People
-import androidx.compose.material.icons.rounded.SortByAlpha
-import androidx.compose.material.icons.rounded.Stream
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.cvetyshayasiren.poetrybook.di.di
@@ -32,11 +19,10 @@ import com.cvetyshayasiren.poetrybook.domain.models.random.RandomPoemBehaviour
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.domain.models.style.ThemeMode
 import com.cvetyshayasiren.poetrybook.domain.models.style.random
-import com.cvetyshayasiren.poetrybook.ui.store.BundleBookmark
-import com.cvetyshayasiren.poetrybook.ui.store.RandomStore
-import com.cvetyshayasiren.poetrybook.ui.store.RandomStoreIntent
-import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
-import com.cvetyshayasiren.poetrybook.ui.store.StyleStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.store.*
+import com.cvetyshayasiren.poetrybook.ui.utils.containers.AlertConfirmationDialog
+import com.materialkolor.PaletteStyle
+import com.materialkolor.dynamiccolor.ColorSpec
 import org.kodein.di.instance
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,8 +31,10 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
 
     val styleStore: StyleStore by di.instance()
     val randomStore: RandomStore by di.instance()
+    val settingsStore: SettingsStore by di.instance()
     val styleState = styleStore.state.collectAsState()
     val randomState = randomStore.state.collectAsState()
+    val settingsEffect = settingsStore.effect.collectAsState(null)
 
     val colors = remember { listOf(Color.Green, Color.Red, Color.Yellow) }
 
@@ -116,6 +104,48 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
                     },
                 ) {
                     Text(themeMode.name)
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        HorizontalDivider(thickness = 1.dp)
+        Spacer(modifier = Modifier.height(12.dp))
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
+        ) {
+            PaletteStyle.entries.forEach { paletteStyle ->
+                val borderColor by animateColorAsState(if(styleState.value.paletteStyle == paletteStyle)
+                    MaterialTheme.colorScheme.tertiary else Color.Transparent
+                )
+                Button(
+                    border = BorderStroke(width = 4.dp, color = borderColor),
+                    onClick = {
+                        styleStore.sendIntent(StyleStoreIntent.SetPaletteStyle(paletteStyle = paletteStyle))
+                    },
+                ) {
+                    Text(paletteStyle.name)
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        HorizontalDivider(thickness = 1.dp)
+        Spacer(modifier = Modifier.height(12.dp))
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
+            horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
+        ) {
+            ColorSpec.SpecVersion.entries.forEach { colorSpecVersion ->
+                val borderColor by animateColorAsState(if(styleState.value.colorSpecVersion == colorSpecVersion)
+                    MaterialTheme.colorScheme.tertiary else Color.Transparent
+                )
+                Button(
+                    border = BorderStroke(width = 4.dp, color = borderColor),
+                    onClick = {
+                        styleStore.sendIntent(StyleStoreIntent.SetColorSpecVersion(colorSpecVersion = colorSpecVersion))
+                    },
+                ) {
+                    Text(colorSpecVersion.name)
                 }
             }
         }
@@ -295,6 +325,87 @@ fun PlugSettingsPane(modifier: Modifier, style: IsmStyle) {
             )
             Text("IsRandomiseThemeMode")
         }
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
+
+        ) {
+            Switch(
+                checked = randomState.value.randomState.isRandomisePaletteStyle,
+                onCheckedChange = {
+                    randomStore.sendIntent(RandomStoreIntent.SetIsRandomisePaletteStyle(it))
+                }
+            )
+            Text("IsRandomisePaletteStyle")
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterHorizontally)
+
+        ) {
+            Switch(
+                checked = randomState.value.randomState.isRandomiseColorSpecVersion,
+                onCheckedChange = {
+                    randomStore.sendIntent(RandomStoreIntent.SetIsRandomiseColorSpecVersion(it))
+                }
+            )
+            Text("IsRandomiseColorSpecVersion")
+        }
+
+        Spacer(modifier = Modifier.height(48.dp))
+        HorizontalDivider(thickness = 4.dp)
+        Spacer(modifier = Modifier.height(48.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = {
+                    settingsStore.sendIntent(SettingsStoreIntent.SetDefault)
+                }
+            ) {
+                Text("DEFAULT")
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                ),
+                onClick = {
+                    settingsStore.sendIntent(SettingsStoreIntent.ApplyWipe)
+                }
+            ) {
+                Text("WIPE")
+            }
+        }
+
         Spacer(modifier = Modifier.height(240.dp))
+
+        AlertConfirmationDialog<SettingsStoreEffect.ShowWipeConfirmation>(
+            modifier = Modifier
+                .wrapContentSize()
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            effect = settingsEffect.value,
+        ) { _, enabled ->
+            Column {
+                Text("WIPE all?")
+                Button(
+                    onClick = {
+                        settingsStore.sendIntent(SettingsStoreIntent.Wipe)
+                        enabled.value = false
+                    }
+                ) {
+                    Text("wipe")
+                }
+            }
+        }
     }
 }

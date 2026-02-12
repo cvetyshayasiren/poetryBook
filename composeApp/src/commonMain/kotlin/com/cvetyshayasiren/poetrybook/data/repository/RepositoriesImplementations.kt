@@ -1,11 +1,7 @@
 package com.cvetyshayasiren.poetrybook.data.repository
 
 import com.cvetyshayasiren.poetrybook.data.models.*
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicSequence
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedPoemBookmarks
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.*
 import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
 import com.cvetyshayasiren.poetrybook.domain.models.random.RandomState
 import com.cvetyshayasiren.poetrybook.domain.models.style.StyleState
@@ -105,4 +101,9 @@ class HistoryRepositoryImplementation(): HistoryRepository {
             value = Json.encodeToString<DataDatedBookmarks>(fromDatedPoetBookmarks(history))
         )
     }
+}
+
+class SettingsRepositoryImplementation(): SettingsRepository {
+    private val settings = Settings()
+    override fun wipe() = settings.clear()
 }

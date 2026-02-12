@@ -1,8 +1,10 @@
 package com.cvetyshayasiren.poetrybook.ui.navigation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,8 +13,6 @@ import androidx.navigation3.ui.NavDisplay
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
-import com.cvetyshayasiren.poetrybook.ui.store.PageStore
-import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 import org.kodein.di.instance
 
@@ -24,6 +24,12 @@ fun MainNavigationScreen(
 ) {
     val navigationStore: NavigationStore by di.instance()
     val state = navigationStore.state.collectAsState()
+
+    LaunchedEffect(isExpanded) {
+        if(isExpanded && (state.value.current() is Destination.Settings)) {
+            navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.Page))
+        }
+    }
 
     Box(modifier = modifier) {
         NavDisplay(
@@ -40,9 +46,13 @@ fun MainNavigationScreen(
                 }
             }
         )
-        styleScreenBundle.NavigationView(
+        AnimatedContent(
             modifier = Modifier.align(Alignment.BottomCenter),
-            isExpanded = isExpanded
-        )
+            targetState = isExpanded,
+        ) {
+            styleScreenBundle.NavigationView(
+                isExpanded = it
+            )
+        }
     }
 }

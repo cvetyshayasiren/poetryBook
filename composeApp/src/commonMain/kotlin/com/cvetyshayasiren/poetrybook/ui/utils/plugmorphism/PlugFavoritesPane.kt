@@ -2,48 +2,27 @@ package com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStore
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStoreEffect
 import com.cvetyshayasiren.poetrybook.ui.store.FavoritesStoreIntent
-import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.utils.containers.AlertConfirmationDialog
-import kotlinx.coroutines.flow.collect
 import org.kodein.di.instance
 
 @Composable
@@ -98,7 +77,11 @@ fun PlugFavoritesPane(modifier: Modifier, style: IsmStyle) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            modifier = Modifier.weight(8f),
+                            modifier = Modifier
+                                .weight(8f)
+                                .clickable {
+                                    favoritesStore.sendIntent(FavoritesStoreIntent.NavigateAndSwitch(titledPoemBookmark))
+                                },
                             text = titledPoemBookmark.title
                         )
                         IconButton(

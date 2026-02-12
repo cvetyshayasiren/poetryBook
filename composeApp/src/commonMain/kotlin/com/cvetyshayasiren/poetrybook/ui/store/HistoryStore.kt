@@ -1,6 +1,5 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import androidx.lifecycle.viewModelScope
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
 import com.cvetyshayasiren.poetrybook.domain.models.bookmark.DatedBookmark
@@ -11,7 +10,6 @@ import com.cvetyshayasiren.poetrybook.domain.repository.HistoryRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.kodein.di.instance
 

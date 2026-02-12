@@ -1,6 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.store
 
-import com.cvetyshayasiren.poetrybook.domain.models.poet.*
+import com.cvetyshayasiren.poetrybook.domain.models.poet.Poets
+import com.cvetyshayasiren.poetrybook.domain.models.poet.check
 import com.cvetyshayasiren.poetrybook.domain.repository.PoetryBookRepository
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult

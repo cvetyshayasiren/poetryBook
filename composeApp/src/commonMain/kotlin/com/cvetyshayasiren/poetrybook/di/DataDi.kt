@@ -11,4 +11,5 @@ val dataDiModule = DI.Module(name = "dataDi") {
     bindSingleton<RandomStateRepository> { RandomStateRepositoryImplementation() }
     bindSingleton<FavoritesRepository> { FavoritesRepositoryImplementation() }
     bindSingleton<HistoryRepository> { HistoryRepositoryImplementation() }
+    bindSingleton<SettingsRepository> { SettingsRepositoryImplementation()  }
 }

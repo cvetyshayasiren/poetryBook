@@ -26,6 +26,13 @@ interface StoreLogger {
         )
     }
 
+    fun logStoreStateStart(storeName: String) {
+        sendLog(
+            subject = storeName,
+            action = "start state"
+        )
+    }
+
     fun logStoreStateResume(storeName: String) {
         sendLog(
             subject = storeName,
@@ -49,10 +56,19 @@ interface StoreLogger {
         )
     }
 
+    fun logStoreEffectResume(storeName: String) {
+        sendLog(
+            subject = storeName,
+            action = "resume effect"
+        )
+    }
+
     fun logStoreEffectCompletion(storeName: String, throwable: Throwable?) {
+        val cause = throwable?.cause?.let { " Cause: [${it}]" } ?: ""
+        val message = throwable?.message?.let { " Message: [$it]" } ?: ""
         sendLog(
             subject = "$storeName effect",
-            action = "call on completion",
+            action = "call on completion.$cause$message",
         )
     }
 
@@ -60,6 +76,20 @@ interface StoreLogger {
         sendLog(
             subject = storeName,
             action = "send intent [$intentName]"
+        )
+    }
+
+    fun logStoreConsumeIntent(storeName: String, intentName: String) {
+        sendLog(
+            subject = storeName,
+            action = "consume intent [$intentName]"
+        )
+    }
+
+    fun logStoreExecuteIntent(storeName: String, intentName: String) {
+        sendLog(
+            subject = storeName,
+            action = "execute intent [$intentName]"
         )
     }
 

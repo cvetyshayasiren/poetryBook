@@ -1,11 +1,6 @@
 package com.cvetyshayasiren.poetrybook.data.models
 
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicSequence
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.BasicBookmarks
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Bookmarks
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.PoetBookmark
-import com.cvetyshayasiren.poetrybook.domain.models.bookmark.Sequence
+import com.cvetyshayasiren.poetrybook.domain.models.bookmark.*
 import com.cvetyshayasiren.poetrybook.domain.utils.toLinkedHashSet
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline

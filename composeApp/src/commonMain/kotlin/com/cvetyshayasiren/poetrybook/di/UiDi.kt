@@ -14,4 +14,5 @@ val uiDiModule = DI.Module(name = "uiDi") {
     bindSingleton { RandomStore(repository = instance()) }
     bindSingleton { SearchStore() }
     bindSingleton { StyleStore(repository = instance()) }
+    bindSingleton { SettingsStore(repository = instance()) }
 }

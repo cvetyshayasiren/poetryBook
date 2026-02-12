@@ -28,8 +28,7 @@ class NavigationStoreReducer:
     }
 }
 
-class NavigationStore:
-    Store<NavigationStoreState, NavigationStoreIntent, NavigationStoreEffect>(
-        defaultState = listOf(Destination.Page),
-        reducer = NavigationStoreReducer()
-    )
+class NavigationStore: Store<NavigationStoreState, NavigationStoreIntent, NavigationStoreEffect>(
+    defaultState = listOf(Destination.Page),
+    reducer = NavigationStoreReducer()
+)
