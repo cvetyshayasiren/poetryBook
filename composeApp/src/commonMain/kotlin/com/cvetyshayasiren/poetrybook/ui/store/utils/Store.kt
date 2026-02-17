@@ -13,7 +13,7 @@ import kotlinx.coroutines.sync.withLock
 
 abstract class Store<S, I, E>(
     defaultState: S,
-    sharingStarted: SharingStarted =
+    private val sharingStarted: SharingStarted =
         SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000, replayExpirationMillis = 5000),
     private val reducer: Reducer<S, I, E>,
     private val initialiseState: (suspend () -> S)? = null,
@@ -143,4 +143,25 @@ abstract class Store<S, I, E>(
     private fun getIntentName(intent: I): String = intent?.let { it::class.simpleName } ?: "null"
 
     init { launchAfterInit { consumeIntents() } }
+
+    fun initialisedStateOrNull(): StateFlow<S?> = state
+        .map { state ->
+            when(stateIsInit) {
+                true -> state
+                false -> null
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = sharingStarted,
+            initialValue = null
+        )
+
+    fun isStateInitialised(): StateFlow<Boolean> = state
+        .map { _ -> stateIsInit }
+        .stateIn(
+            scope = viewModelScope,
+            started = sharingStarted,
+            initialValue = false
+        )
 }

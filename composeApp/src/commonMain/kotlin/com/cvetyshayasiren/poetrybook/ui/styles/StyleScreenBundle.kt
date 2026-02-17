@@ -1,13 +1,24 @@
 package com.cvetyshayasiren.poetrybook.ui.styles
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation3.scene.Scene
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
-import com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism.PlugScreenBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.bundle.BauhausScreenBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.brutalism.bundle.BrutalismScreenBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.bundle.GlassmorphismScreenBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.bundle.NeumorphismScreenBundle
 
 interface StyleScreenBundle {
     @Composable
-    fun NavigationView(
+    fun NavigationPane(
         modifier: Modifier = Modifier,
         isExpanded: Boolean
     )
@@ -28,9 +39,10 @@ interface StyleScreenBundle {
     fun SearchPane(modifier: Modifier = Modifier)
 }
 
-fun IsmStyle.getStyleScreenBundle(): StyleScreenBundle = when(this) {
-    IsmStyle.NEU -> PlugScreenBundle(this)
-    IsmStyle.BRUT -> PlugScreenBundle(this)
-    IsmStyle.BAU -> PlugScreenBundle(this)
-    IsmStyle.GLASS -> PlugScreenBundle(this)
-}
+val IsmStyle.styleScreenBundle: StyleScreenBundle
+    get() = when (this) {
+        IsmStyle.NEU -> NeumorphismScreenBundle()
+        IsmStyle.BRUT -> BrutalismScreenBundle()
+        IsmStyle.BAU -> BauhausScreenBundle()
+        IsmStyle.GLASS -> GlassmorphismScreenBundle()
+    }

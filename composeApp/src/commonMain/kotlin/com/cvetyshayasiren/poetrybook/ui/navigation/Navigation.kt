@@ -13,6 +13,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.styles.AnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 import org.kodein.di.instance
 
@@ -20,6 +21,7 @@ import org.kodein.di.instance
 fun MainNavigationScreen(
     modifier: Modifier = Modifier,
     styleScreenBundle: StyleScreenBundle,
+    animationBundle: AnimationBundle,
     isExpanded: Boolean
 ) {
     val navigationStore: NavigationStore by di.instance()
@@ -33,6 +35,7 @@ fun MainNavigationScreen(
 
     Box(modifier = modifier) {
         NavDisplay(
+            transitionSpec = { animationBundle.appearance.contentTransform },
             modifier = Modifier.fillMaxSize(),
             backStack = state.value,
             onBack = { navigationStore.sendIntent(NavigationStoreIntent.Back) },
@@ -47,10 +50,11 @@ fun MainNavigationScreen(
             }
         )
         AnimatedContent(
+            transitionSpec = { animationBundle.appearance.contentTransform },
             modifier = Modifier.align(Alignment.BottomCenter),
             targetState = isExpanded,
         ) {
-            styleScreenBundle.NavigationView(
+            styleScreenBundle.NavigationPane(
                 isExpanded = it
             )
         }

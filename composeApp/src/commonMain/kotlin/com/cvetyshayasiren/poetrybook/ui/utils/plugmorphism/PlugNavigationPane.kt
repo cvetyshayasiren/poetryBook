@@ -37,15 +37,28 @@ import com.materialkolor.ktx.darken
 import org.kodein.di.instance
 
 @Composable
-fun PlugNavigationView(
+fun PlugNavigationPane(
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
     style: IsmStyle,
 ) {
+
+    data class StyledColors(val color: Color, val onColor: Color)
+
+    @Composable
+    fun getStyledColors(ismStyle: IsmStyle): StyledColors = when(ismStyle) {
+        IsmStyle.NEU -> StyledColors(color = MaterialTheme.colorScheme.primaryContainer, onColor = MaterialTheme.colorScheme.onPrimaryContainer)
+        IsmStyle.BRUT -> StyledColors(color = MaterialTheme.colorScheme.secondaryContainer, onColor = MaterialTheme.colorScheme.onSecondaryContainer)
+        IsmStyle.BAU -> StyledColors(color = MaterialTheme.colorScheme.tertiaryContainer, onColor = MaterialTheme.colorScheme.onTertiaryContainer)
+        IsmStyle.GLASS -> StyledColors(color = MaterialTheme.colorScheme.errorContainer, onColor = MaterialTheme.colorScheme.onErrorContainer)
+    }
+
     val navigationStore: NavigationStore by di.instance()
     val navigationState = navigationStore.state.collectAsState()
     val pageStore: PageStore by di.instance()
     val navList = Destination.navList(isExpanded)
+
+    val (color, onColor) = getStyledColors(ismStyle = style)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -54,12 +67,11 @@ fun PlugNavigationView(
             .padding(24.dp)
             .fillMaxWidth(.8f)
             .clip(RoundedCornerShape(24.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(color)
     ) {
         navList.forEach { destination ->
             val borderColor by animateColorAsState(
-                targetValue = if(destination == navigationState.value.current())
-                    MaterialTheme.colorScheme.onPrimaryContainer else Color.Transparent
+                targetValue = if(destination == navigationState.value.current()) onColor else Color.Transparent
             )
             IconButton(
                 modifier = Modifier
@@ -78,7 +90,7 @@ fun PlugNavigationView(
                         Destination.Settings -> Icons.Filled.Settings
                     },
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = onColor
                 )
             }
         }
@@ -86,10 +98,7 @@ fun PlugNavigationView(
         val borderColor by animateColorAsState(
             targetValue = if(isPage) MaterialTheme.colorScheme.onPrimaryContainer else Color.Transparent
         )
-        val diceColor by animateColorAsState(
-            if(isPage) MaterialTheme.colorScheme.onPrimaryContainer
-            else MaterialTheme.colorScheme.onPrimaryContainer.darken(1.5f)
-        )
+        val diceColor by animateColorAsState(if(isPage) onColor else onColor.darken(1.5f))
         IconButton(
             modifier = Modifier
                 .border(width = 2.dp, color = borderColor, shape = CircleShape),
@@ -108,7 +117,7 @@ fun PlugNavigationView(
                     false -> Icons.Outlined.Pages
                 },
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primaryContainer
+                tint = color
             )
         }
     }

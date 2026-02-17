@@ -1,6 +1,5 @@
 package com.cvetyshayasiren.poetrybook.ui.adaptive
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
@@ -14,7 +13,8 @@ import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.ui.navigation.MainNavigationScreen
 import com.cvetyshayasiren.poetrybook.ui.navigation.isExpanded
 import com.cvetyshayasiren.poetrybook.ui.store.StyleStore
-import com.cvetyshayasiren.poetrybook.ui.styles.getStyleScreenBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.animationBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.styleScreenBundle
 import org.kodein.di.instance
 
 @Composable
@@ -22,34 +22,34 @@ fun MainAdaptiveScreen() {
     val styleStore: StyleStore by di.instance()
     val styleState = styleStore.state.collectAsState()
     val isExpanded = WindowSizeClass.isExpanded()
+    val styleScreenBundle = styleState.value.ismStyle.styleScreenBundle
+    val animationBundle = styleState.value.ismStyle.animationBundle
 
-    AnimatedContent(
-        targetState = styleState.value.ismStyle
-    ) { ismStyle ->
-        val styleScreenBundle = ismStyle.getStyleScreenBundle()
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        MainNavigationScreen(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            styleScreenBundle = styleScreenBundle,
+            animationBundle = animationBundle,
+            isExpanded = isExpanded
+        )
+
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = animationBundle.settingsPane.enter,
+            exit = animationBundle.settingsPane.exit
         ) {
-            MainNavigationScreen(
+            styleScreenBundle.SettingsPane(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                styleScreenBundle = styleScreenBundle,
-                isExpanded = isExpanded
+                    .width(360.dp)
+                    .fillMaxHeight()
+                    .animateContentSize()
             )
-
-            AnimatedVisibility(
-                visible = isExpanded
-            ) {
-                styleScreenBundle.SettingsPane(
-                    modifier = Modifier
-                        .width(360.dp)
-                        .fillMaxHeight()
-                        .animateContentSize()
-                )
-            }
         }
     }
 }
