@@ -8,7 +8,8 @@ import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 
 typealias NavigationStoreState = Destinations
-fun NavigationStoreState.isPage(): Boolean = this.current() == Destination.Page
+fun NavigationStoreState.nowIs(destination: Destination): Boolean = current() == destination
+fun NavigationStoreState.isPage(): Boolean = current() == Destination.Page
 
 sealed interface NavigationStoreIntent {
     data object Back: NavigationStoreIntent

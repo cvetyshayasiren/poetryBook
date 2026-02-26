@@ -37,10 +37,18 @@ fun NeumorphicIconButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     color: Color = MaterialTheme.colorScheme.surfaceBright,
+    clamped: Boolean = false,
     content: @Composable (() -> Unit)
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val fraction = remember { Animatable(0f) }
+
+    LaunchedEffect(clamped) {
+        when(clamped) {
+            true -> fraction.animateTo(1f)
+            false -> fraction.animateTo(0f)
+        }
+    }
 
     LaunchedEffect(Unit) {
         interactionSource.interactions.collect { interaction ->
@@ -64,6 +72,7 @@ fun NeumorphicIconButton(
                 shape = CircleShape,
                 offset = lerp(NeumorphismConfig.shadowOffset, (-16).dp, fraction.value)
             ) then modifier,
+        enabled = !clamped,
         interactionSource = interactionSource,
         onClick = onClick,
         content = content
