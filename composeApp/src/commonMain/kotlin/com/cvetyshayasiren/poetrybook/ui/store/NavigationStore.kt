@@ -2,11 +2,13 @@ package com.cvetyshayasiren.poetrybook.ui.store
 
 import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
 import com.cvetyshayasiren.poetrybook.ui.navigation.Destinations
+import com.cvetyshayasiren.poetrybook.ui.navigation.current
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Reducer
 import com.cvetyshayasiren.poetrybook.ui.store.utils.ReducerResult
 import com.cvetyshayasiren.poetrybook.ui.store.utils.Store
 
 typealias NavigationStoreState = Destinations
+fun NavigationStoreState.isPage(): Boolean = this.current() == Destination.Page
 
 sealed interface NavigationStoreIntent {
     data object Back: NavigationStoreIntent

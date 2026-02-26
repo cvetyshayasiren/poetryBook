@@ -1,7 +1,6 @@
 package com.cvetyshayasiren.poetrybook.ui.theme
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,12 +29,12 @@ fun PoetryBookTheme(
     DynamicMaterialTheme(
         state = dynamicThemeState,
         animate = true,
-        animationSpec = animationBundle.colorAnimationSpec
+        animationSpec = animationBundle.swapThemeSeedColor
     ) {
         Surface {
             AnimatedContent(
                 targetState = state.value,
-                transitionSpec = { animationBundle.appearance.contentTransform },
+                transitionSpec = { animationBundle.swapStyle.contentTransform },
                 contentKey = { it.ismStyle },
                 content = { content() }
             )

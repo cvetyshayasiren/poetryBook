@@ -17,16 +17,16 @@ import com.cvetyshayasiren.poetrybook.ui.styles.AnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.AnimationPair
 
 class BrutalismAnimationBundle: AnimationBundle {
-    override val appearance: AnimationPair = AnimationPair.build {
+    override val navigate: AnimationPair = AnimationPair.build {
         val animationSpec: FiniteAnimationSpec<Float> = getSpringSpec()
 
         enter = scaleIn(animationSpec = animationSpec) + fadeIn(animationSpec = animationSpec)
         exit = scaleOut(animationSpec = animationSpec) + fadeOut(animationSpec = animationSpec)
     }
 
-    override val colorAnimationSpec: FiniteAnimationSpec<Color> = getSpringSpec()
+    override val swapThemeSeedColor: FiniteAnimationSpec<Color> = getSpringSpec()
 
-    override val settingsPane: AnimationPair = AnimationPair.build {
+    override val showSettingsPane: AnimationPair = AnimationPair.build {
         enter = expandHorizontally(animationSpec = getSpringSpec(), expandFrom = Alignment.Start)
         exit = shrinkHorizontally(animationSpec = getSpringSpec(), shrinkTowards = Alignment.Start)
     }

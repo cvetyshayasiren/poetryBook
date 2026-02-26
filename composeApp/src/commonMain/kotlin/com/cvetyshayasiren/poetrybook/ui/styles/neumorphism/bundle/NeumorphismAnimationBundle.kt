@@ -13,12 +13,12 @@ import com.cvetyshayasiren.poetrybook.ui.styles.AnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.AnimationPair
 
 class NeumorphismAnimationBundle: AnimationBundle {
-    override val appearance: AnimationPair = AnimationPair.build {
+    override val navigate: AnimationPair = AnimationPair.build {
         val actionScale: Float = .8f
         enter = scaleIn(initialScale = actionScale) + fadeIn()
         exit = scaleOut(targetScale = actionScale) + fadeOut()
     }
 
-    override val colorAnimationSpec: FiniteAnimationSpec<Color> =
+    override val swapThemeSeedColor: FiniteAnimationSpec<Color> =
         tween(durationMillis = 1000, easing = FastOutSlowInEasing)
 }

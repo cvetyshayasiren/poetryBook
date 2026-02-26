@@ -17,12 +17,14 @@ import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.bundle.Glassmorphi
 import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.bundle.NeumorphismAnimationBundle
 
 interface AnimationBundle {
-    val appearance: AnimationPair get() = AnimationPair()
-    val colorAnimationSpec: FiniteAnimationSpec<Color> get() = tween(durationMillis = 1000)
-    val settingsPane get() = AnimationPair(
+    val navigate: AnimationPair get() = AnimationPair()
+    val swapStyle: AnimationPair get() = navigate
+    val swapThemeSeedColor: FiniteAnimationSpec<Color> get() = tween(durationMillis = 1000)
+    val showSettingsPane get() = AnimationPair(
         enter = fadeIn() + expandHorizontally(),
         exit = fadeOut() + shrinkHorizontally()
     )
+    val swapNavigationPane get() = AnimationPair()
 }
 
 data class AnimationPair(

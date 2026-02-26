@@ -11,10 +11,10 @@ import com.cvetyshayasiren.poetrybook.ui.styles.AnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.AnimationPair
 
 class BauhausAnimationBundle: AnimationBundle {
-    override val appearance: AnimationPair = AnimationPair.build {
+    override val navigate: AnimationPair = AnimationPair.build {
         enter = slideInVertically(initialOffsetY = { -it })
         exit = slideOutVertically(targetOffsetY = { it })
     }
 
-    override val colorAnimationSpec: FiniteAnimationSpec<Color> = spring(dampingRatio = Spring.DampingRatioLowBouncy)
+    override val swapThemeSeedColor: FiniteAnimationSpec<Color> = spring(dampingRatio = Spring.DampingRatioLowBouncy)
 }

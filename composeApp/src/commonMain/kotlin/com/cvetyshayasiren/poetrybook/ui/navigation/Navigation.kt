@@ -35,7 +35,7 @@ fun MainNavigationScreen(
 
     Box(modifier = modifier) {
         NavDisplay(
-            transitionSpec = { animationBundle.appearance.contentTransform },
+            transitionSpec = { animationBundle.navigate.contentTransform },
             modifier = Modifier.fillMaxSize(),
             backStack = state.value,
             onBack = { navigationStore.sendIntent(NavigationStoreIntent.Back) },
@@ -50,7 +50,7 @@ fun MainNavigationScreen(
             }
         )
         AnimatedContent(
-            transitionSpec = { animationBundle.appearance.contentTransform },
+            transitionSpec = { animationBundle.swapNavigationPane.contentTransform },
             modifier = Modifier.align(Alignment.BottomCenter),
             targetState = isExpanded,
         ) {

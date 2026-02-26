@@ -41,8 +41,8 @@ fun MainAdaptiveScreen() {
 
         AnimatedVisibility(
             visible = isExpanded,
-            enter = animationBundle.settingsPane.enter,
-            exit = animationBundle.settingsPane.exit
+            enter = animationBundle.showSettingsPane.enter,
+            exit = animationBundle.showSettingsPane.exit
         ) {
             styleScreenBundle.SettingsPane(
                 modifier = Modifier

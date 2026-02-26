@@ -33,6 +33,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
 import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.store.PageStore
 import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.store.isPage
 import com.materialkolor.ktx.darken
 import org.kodein.di.instance
 
@@ -94,7 +95,7 @@ fun PlugNavigationPane(
                 )
             }
         }
-        val isPage = navigationState.value.current() == Destination.Page
+        val isPage = navigationState.value.isPage()
         val borderColor by animateColorAsState(
             targetValue = if(isPage) MaterialTheme.colorScheme.onPrimaryContainer else Color.Transparent
         )
