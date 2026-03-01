@@ -7,10 +7,7 @@ import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 
 class PlugScreenBundle(val style: IsmStyle): StyleScreenBundle {
     @Composable
-    override fun NavigationPane(
-        modifier: Modifier,
-        isExpanded: Boolean
-    ) = PlugNavigationPane(modifier, isExpanded, style)
+    override fun NavigationPane(modifier: Modifier) = PlugNavigationPane(modifier, style)
 
     @Composable
     override fun PagePane(modifier: Modifier) = PlugPagePane(modifier, style)

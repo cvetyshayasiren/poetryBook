@@ -1,16 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.bundle
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.togetherWith
-import androidx.compose.animation.unveilIn
-import androidx.compose.animation.veilOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation3.scene.Scene
 import com.cvetyshayasiren.poetrybook.ui.styles.StyleScreenBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.panels.favorites.BauhausFavoritesPane
 import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.panels.history.BauhausHistoryPane
@@ -21,8 +12,7 @@ import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.panels.settings.BauhausS
 
 class BauhausScreenBundle: StyleScreenBundle {
     @Composable
-    override fun NavigationPane(modifier: Modifier, isExpanded: Boolean) =
-        BauhausNavigationPane(modifier = modifier, isExpanded = isExpanded)
+    override fun NavigationPane(modifier: Modifier) = BauhausNavigationPane(modifier = modifier)
 
     @Composable
     override fun PagePane(modifier: Modifier) = BauhausPagePane(modifier = modifier)

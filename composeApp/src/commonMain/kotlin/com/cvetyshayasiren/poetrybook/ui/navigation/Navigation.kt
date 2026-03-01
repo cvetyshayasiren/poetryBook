@@ -1,6 +1,5 @@
 package com.cvetyshayasiren.poetrybook.ui.navigation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -49,14 +48,11 @@ fun MainNavigationScreen(
                 }
             }
         )
-        AnimatedContent(
-            transitionSpec = { animationBundle.swapNavigationPane.contentTransform },
+
+        Box(
             modifier = Modifier.align(Alignment.BottomCenter),
-            targetState = isExpanded,
         ) {
-            styleScreenBundle.NavigationPane(
-                isExpanded = it
-            )
+            styleScreenBundle.NavigationPane()
         }
     }
 }

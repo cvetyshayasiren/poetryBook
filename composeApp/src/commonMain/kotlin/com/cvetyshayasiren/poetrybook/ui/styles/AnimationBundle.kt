@@ -1,14 +1,8 @@
 package com.cvetyshayasiren.poetrybook.ui.styles
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.*
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.ui.graphics.Color
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.bundle.BauhausAnimationBundle
@@ -25,6 +19,7 @@ interface AnimationBundle {
         exit = fadeOut() + shrinkHorizontally()
     )
     val swapNavigationPane get() = AnimationPair()
+    fun <T>getAnimationSpec(): FiniteAnimationSpec<T> = tween()
 }
 
 data class AnimationPair(

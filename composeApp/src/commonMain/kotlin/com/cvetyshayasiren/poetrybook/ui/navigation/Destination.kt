@@ -1,8 +1,7 @@
 package com.cvetyshayasiren.poetrybook.ui.navigation
 
-typealias Destinations = List<Destination>
-
-fun Destinations.current() = last()
+import androidx.compose.runtime.Composable
+import androidx.window.core.layout.WindowSizeClass
 
 sealed interface Destination {
     data object Page: Destination
@@ -13,9 +12,22 @@ sealed interface Destination {
 
     companion object {
         val list = listOf<Destination>(Page, Settings, Favorites, History, Search)
-        private val expandedNavList = listOf(History, Favorites)
-        private val notExpandedNavList = listOf(History, Favorites, Settings)
-
-        fun navList(isExpanded: Boolean) = if(isExpanded) expandedNavList else notExpandedNavList
     }
 }
+
+typealias Destinations = List<Destination>
+
+fun Destinations.current() = last()
+fun Destinations.nowIs(destination: Destination): Boolean = current() == destination
+fun Destinations.isPage(): Boolean = nowIs(Destination.Page)
+
+@Composable
+fun Destinations.currentMenuIndex(isExpanded: Boolean = WindowSizeClass.isExpanded()): Int? =
+    when(current()) {
+        Destination.History -> 0
+        Destination.Favorites -> 1
+        Destination.Settings -> if(isExpanded) null else 2
+        Destination.Page -> if(isExpanded) 2 else 3
+        Destination.Search -> null
+    }
+

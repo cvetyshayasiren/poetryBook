@@ -6,6 +6,6 @@ import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism.PlugNavigationPane
 
 @Composable
-fun BauhausNavigationPane(modifier: Modifier = Modifier, isExpanded: Boolean) {
-    PlugNavigationPane(modifier = modifier, isExpanded = isExpanded, style = IsmStyle.BAU)
+fun BauhausNavigationPane(modifier: Modifier = Modifier) {
+    PlugNavigationPane(modifier = modifier, style = IsmStyle.BAU)
 }

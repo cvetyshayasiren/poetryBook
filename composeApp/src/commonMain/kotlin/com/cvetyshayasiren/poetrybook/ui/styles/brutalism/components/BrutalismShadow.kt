@@ -21,7 +21,8 @@ fun Modifier.brutalShadow(
     shadowColor: Color = MaterialTheme.colorScheme.secondary,
     borderColor: Color = MaterialTheme.colorScheme.tertiary,
     shape: Shape = BrutalismConfig.defaultRoundedShape,
-    width: Dp = BrutalismConfig.shadowWidth
+    offset: DpOffset = BrutalismConfig.offset,
+    borderWidth: Dp = BrutalismConfig.borderWidth,
 ): Modifier = this then Modifier
     .dropShadow(
         shape = shape,
@@ -29,9 +30,9 @@ fun Modifier.brutalShadow(
             radius = 0.dp,
             spread = 0.dp,
             color = shadowColor,
-            offset = DpOffset(width, width)
+            offset = offset
         )
     )
-    .border(width = width, color = borderColor, shape = shape)
+    .border(width = borderWidth, color = borderColor, shape = shape)
     .clip(shape)
     .background(backgroundColor)

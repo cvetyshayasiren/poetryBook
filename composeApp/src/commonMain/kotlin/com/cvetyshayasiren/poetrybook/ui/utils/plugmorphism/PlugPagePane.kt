@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +26,10 @@ import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.store.PageStore
 import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.store.PageStoreState
+import org.jetbrains.compose.resources.painterResource
 import org.kodein.di.instance
+import poetrybook.composeapp.generated.resources.Res
+import poetrybook.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
@@ -54,6 +58,12 @@ fun PlugPagePane(modifier: Modifier, style: IsmStyle) {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
+
+                        Image(
+                            painter = painterResource(Res.drawable.compose_multiplatform),
+                            contentDescription = "lal"
+                        )
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,

@@ -53,6 +53,7 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.kodein)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.liquid)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

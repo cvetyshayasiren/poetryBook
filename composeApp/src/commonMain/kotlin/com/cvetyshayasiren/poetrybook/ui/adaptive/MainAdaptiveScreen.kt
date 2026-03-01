@@ -2,7 +2,10 @@ package com.cvetyshayasiren.poetrybook.ui.adaptive
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -18,7 +21,7 @@ import com.cvetyshayasiren.poetrybook.ui.styles.styleScreenBundle
 import org.kodein.di.instance
 
 @Composable
-fun MainAdaptiveScreen() {
+fun MainAdaptiveScreen(modifier: Modifier = Modifier) {
     val styleStore: StyleStore by di.instance()
     val styleState = styleStore.state.collectAsState()
     val isExpanded = WindowSizeClass.isExpanded()
@@ -26,7 +29,7 @@ fun MainAdaptiveScreen() {
     val animationBundle = styleState.value.ismStyle.animationBundle
 
     Row(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

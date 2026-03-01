@@ -1,35 +1,38 @@
-package com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.components
+package com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
-import androidx.compose.ui.util.lerp
-import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.NeumorphismConfig
-import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.bundle.NeumorphismAnimationBundle
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.bundle.GlassmorphismAnimationBundle
+import com.materialkolor.ktx.lighten
 
 @Composable
-fun NeumorphicIconButton(
+fun GlassmorphismIconButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    color: Color = MaterialTheme.colorScheme.surfaceBright,
     clamped: Boolean = false,
-    content: @Composable (() -> Unit)
+    icon: ImageVector = Icons.Filled.Favorite,
+    contentDescription: String? = null,
+    tint: Color = MaterialTheme.colorScheme.error,
+    onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val fraction = remember { Animatable(0f) }
-    val animationSpec = remember { NeumorphismAnimationBundle().getAnimationSpec<Float>() }
+    val animationSpec = remember { GlassmorphismAnimationBundle().getAnimationSpec<Float>() }
 
     LaunchedEffect(clamped) {
         when(clamped) {
@@ -48,21 +51,16 @@ fun NeumorphicIconButton(
         }
     }
 
-    IconButton(
-        modifier = Modifier
-            .graphicsLayer {
-                scaleX = lerp(1f, .8f, fraction.value)
-                scaleY = lerp(1f, .8f, fraction.value)
-            }
-            .neumorphicDrop(
-                color = color,
-                shape = CircleShape,
-                offset = lerp(NeumorphismConfig.shadowOffset, (-16).dp, fraction.value)
-            ) then modifier,
-        enabled = !clamped,
-        interactionSource = interactionSource,
-        onClick = onClick,
-        content = content
+    Icon(
+        modifier = modifier
+            .clip(CircleShape)
+            .clickable(
+                enabled = !clamped,
+                interactionSource = interactionSource,
+                onClick = onClick
+            ),
+        imageVector = icon,
+        contentDescription = contentDescription,
+        tint = lerp(tint.copy(alpha = .5f).lighten(2f), tint, fraction.value),
     )
 }
-

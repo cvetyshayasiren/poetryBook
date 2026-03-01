@@ -6,7 +6,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.IntOffset
 import com.cvetyshayasiren.poetrybook.ui.styles.AnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.AnimationPair
 
