@@ -1,11 +1,104 @@
 package com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.panels.navigation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Casino
+import androidx.compose.material.icons.rounded.Replay
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.window.core.layout.WindowSizeClass
+import com.cvetyshayasiren.poetrybook.di.di
 import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
+import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
+import com.cvetyshayasiren.poetrybook.ui.navigation.isExpanded
+import com.cvetyshayasiren.poetrybook.ui.navigation.isPage
+import com.cvetyshayasiren.poetrybook.ui.navigation.nowIs
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStore
+import com.cvetyshayasiren.poetrybook.ui.store.NavigationStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.store.PageStore
+import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
+import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.BauhausConfig
+import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.bundle.BauhausAnimationBundle
+import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.BauhausIconButton
+import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.components.GlassmorphismIconButton
+import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.NeumorphismConfig
+import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.bundle.NeumorphismAnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism.PlugNavigationPane
+import org.kodein.di.instance
+import kotlin.getValue
 
 @Composable
 fun BauhausNavigationPane(modifier: Modifier = Modifier) {
-    PlugNavigationPane(modifier = modifier, style = IsmStyle.BAU)
+    val navigationStore: NavigationStore by di.instance()
+    val navigationState = navigationStore.state.collectAsState()
+    val pageStore: PageStore by di.instance()
+    val isExpanded = WindowSizeClass.isExpanded()
+    val color = MaterialTheme.colorScheme.surfaceBright
+    val onColor = MaterialTheme.colorScheme.onSurface
+    val swapAnimation = remember { BauhausAnimationBundle().swapNavigationPane }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(BauhausConfig.mediumPadding, Alignment.CenterHorizontally),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(BauhausConfig.navigationPaneHeight)
+            .background(color)
+    ) {
+        BauhausIconButton(
+            icon = Icons.Filled.History,
+            clamped = navigationState.value.nowIs(Destination.History)
+        ) {
+            navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.History))
+        }
+        BauhausIconButton(
+            icon = Icons.Filled.Favorite,
+            clamped = navigationState.value.nowIs(Destination.Favorites)
+        ) {
+            navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.Favorites))
+        }
+
+        AnimatedVisibility(
+            visible = !isExpanded,
+            enter = swapAnimation.enter,
+            exit = swapAnimation.exit,
+        ) {
+            BauhausIconButton(
+                icon = Icons.Filled.Settings,
+                clamped = navigationState.value.nowIs(Destination.Settings)
+            ) {
+                navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.Settings))
+            }
+        }
+
+        AnimatedContent(
+            targetState = navigationState.value.isPage()
+        ) { isPage ->
+            BauhausIconButton(
+                icon = when(isPage) {
+                    true -> Icons.Rounded.Casino
+                    false -> Icons.Rounded.Replay
+                }
+            ) {
+                when(navigationState.value.isPage()) {
+                    true -> pageStore.sendIntent(PageStoreIntent.SwitchRandom)
+                    false -> navigationStore.sendIntent(NavigationStoreIntent.NavigateTo(Destination.Page))
+                }
+            }
+        }
+    }
 }

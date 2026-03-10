@@ -49,7 +49,6 @@ fun GlassmorphismNavigationPane(modifier: Modifier = Modifier)  {
     val navigationState = navigationStore.state.collectAsState()
     val pageStore: PageStore by di.instance()
     val isExpanded = WindowSizeClass.isExpanded()
-    val color = MaterialTheme.colorScheme.error
     val swapAnimation = remember { NeumorphismAnimationBundle().swapNavigationPane }
 
     Row(
@@ -59,7 +58,7 @@ fun GlassmorphismNavigationPane(modifier: Modifier = Modifier)  {
             .padding(GlassmorphismConfig.bigPadding)
             .glassy()
             .wrapContentSize()
-            .padding(GlassmorphismConfig.bigPadding)
+            .padding(horizontal = GlassmorphismConfig.bigPadding, vertical = GlassmorphismConfig.mediumPadding)
     ) {
         GlassmorphismIconButton(
             icon = Icons.Filled.History,

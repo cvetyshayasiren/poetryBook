@@ -1,4 +1,4 @@
-package com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.components
+package com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
@@ -18,21 +18,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.bundle.GlassmorphismAnimationBundle
-import com.materialkolor.ktx.lighten
+import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.bundle.BauhausAnimationBundle
 
 @Composable
-fun GlassmorphismIconButton(
+fun BauhausIconButton(
     modifier: Modifier = Modifier,
     clamped: Boolean = false,
     icon: ImageVector = Icons.Filled.Favorite,
     contentDescription: String? = null,
-    tint: Color = MaterialTheme.colorScheme.error,
+    tint: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val fraction = remember { Animatable(0f) }
-    val animationSpec = remember { GlassmorphismAnimationBundle().getAnimationSpec<Float>() }
+    val animationSpec = remember { BauhausAnimationBundle().getAnimationSpec<Float>() }
 
     LaunchedEffect(clamped) {
         when(clamped) {
@@ -61,6 +60,6 @@ fun GlassmorphismIconButton(
             ),
         imageVector = icon,
         contentDescription = contentDescription,
-        tint = lerp(MaterialTheme.colorScheme.inverseSurface.copy(alpha = .5f), tint, fraction.value),
+        tint = tint,
     )
 }
