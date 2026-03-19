@@ -1,7 +1,6 @@
 package com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism
 
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.fletchmckee.liquid.LiquidScope

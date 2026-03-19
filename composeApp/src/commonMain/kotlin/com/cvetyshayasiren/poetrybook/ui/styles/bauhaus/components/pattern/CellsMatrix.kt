@@ -4,21 +4,21 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 
 interface CellsMatrix {
-    fun calculate(i: Int, j: Int, seed: Int): CellProperties
+    fun calculate(cell: FieldMeasuredCell, layer: Int, seed: Int): CellProperties
 
     class Static(
-        val cellMatrix: CellPropertiesBuilder.(i: Int, j: Int) -> Unit = { _, _ -> }
+        val cellMatrix: CellPropertiesBuilder.(cell: FieldMeasuredCell) -> Unit = { _, _ -> }
     ): CellsMatrix {
-        override fun calculate(i: Int, j: Int, seed: Int): CellProperties =
-            CellPropertiesBuilder(randomSeed = seed).apply { cellMatrix(i, j) }.build()
+        override fun calculate(cell: FieldMeasuredCell, layer: Int, seed: Int): CellProperties =
+            CellPropertiesBuilder(randomSeed = seed, layer = layer).apply { cellMatrix(cell) }.build()
     }
 
     class Animated(
         val animatable: Animatable<Float, AnimationVector1D> = Animatable(0f),
-        val transitionMatrix: CellPropertiesBuilder.(i: Int, j: Int, progress: Float) -> Unit = { _, _, _ -> }
+        val transitionMatrix: CellPropertiesBuilder.(cell: FieldMeasuredCell, progress: Float) -> Unit = { _, _, _ -> }
     ): CellsMatrix {
-        override fun calculate(i: Int, j: Int, seed: Int): CellProperties =
-            CellPropertiesBuilder(i = i, j = j, randomSeed = seed)
-                .apply { transitionMatrix(i,j,animatable.value) }.build()
+        override fun calculate(cell: FieldMeasuredCell, layer: Int, seed: Int): CellProperties =
+            CellPropertiesBuilder(i = cell.i, j = cell.j, randomSeed = seed, layer = layer)
+                .apply { transitionMatrix(cell,animatable.value) }.build()
     }
 }

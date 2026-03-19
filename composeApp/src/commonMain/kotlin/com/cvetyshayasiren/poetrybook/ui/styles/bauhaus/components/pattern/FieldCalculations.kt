@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Size
 
 class FieldCalculations(
     val fieldMeasurements: FieldMeasurements = FieldMeasurements.Grid(),
-    val fieldMatrixTransform: (FieldMeasuredMatrixBuilder.() -> Unit) = { shuffle() }
+    val fieldMatrixTransform: (FieldMeasuredMatrixBuilder.() -> Unit) = {  }
 ) {
     private var cachedFieldMeasuredMatrix: FieldMeasuredMatrix = FieldMeasuredMatrix.EMPTY
     private var cachedSize = Size.Zero

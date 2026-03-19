@@ -15,10 +15,12 @@ class BauhausPatternState(
     val seed: MutableState<Int> = mutableStateOf(seed ?: getRandomSeed())
 
     fun draw(size: Size, drawScope: ContentDrawScope) {
-        fieldCalculations.calculate(seed.value, size).cells.forEach { cell ->
-            cellsMatrix.calculate(
-                i = cell.getI(), j = cell.getJ(), seed =  seed.value
-            ).draw(rect = cell.getRect(), drawScope =  drawScope)
+        fieldCalculations.calculate(seed.value, size).matrixMap.forEach { (layer, fieldLayer) ->
+            fieldLayer.forEach { cell ->
+                cellsMatrix.calculate(
+                    cell = cell, layer = layer, seed = seed.value
+                ).draw(rect = cell.rect, drawScope = drawScope)
+            }
         }
     }
 

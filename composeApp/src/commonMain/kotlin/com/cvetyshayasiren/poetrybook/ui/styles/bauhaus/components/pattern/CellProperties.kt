@@ -1,15 +1,12 @@
 package com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern
 
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.copy
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMode
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.random.Random
@@ -34,6 +31,23 @@ data class CellProperties(
 ) {
     companion object
 
+    fun test(rect: Rect, drawScope: ContentDrawScope) {
+        val matrix = Matrix().apply {
+            resetToPivotedTransform(
+                pivotX = pivotX,
+                pivotY = pivotY,
+            )
+        }
+
+        val fig = BauFigure.PathFig()
+
+        drawScope.withTransform(
+            transformBlock = { transform(matrix) }
+        ) {
+            fig.onDraw.invoke(drawScope)
+        }
+    }
+
     fun draw(rect: Rect, drawScope: ContentDrawScope) = drawScope.apply {
         val matrix = Matrix().apply {
             resetToPivotedTransform(
@@ -48,10 +62,11 @@ data class CellProperties(
         }
 
         padding?.let { padding ->
-            val paddingScale = 1 - (padding / rect.width.toDp())
-            if(paddingScale.isFinite()) {
+            val paddingScaleH = 1 - (padding / rect.width.toDp())
+            val paddingScaleV = 1 - (padding / rect.height.toDp())
+            if(paddingScaleH.isFinite()) {
                 matrix.apply {
-                    scale(paddingScale, paddingScale)
+                    scale(paddingScaleH, paddingScaleV)
                 }
             }
         }
@@ -70,6 +85,7 @@ class CellPropertiesBuilder(
     i: Int = 0,
     j: Int = 0,
     randomSeed: Int = 1,
+    val layer: Int = 0,
     var figure: BauhausFigure = defaultFigure,
     var pivotX: Float = defaultPivotX,
     var pivotY: Float = defaultPivotY,
@@ -87,7 +103,7 @@ class CellPropertiesBuilder(
     var blendMode: BlendMode = defaultBlendMode,
     var padding: Dp? = defaultPadding,
 ) {
-    val uniqueIndex = cantorPairIndex(i, j)
+    val uniqueIndex = cantorTripleIndex(i,j,layer)
     val random = Random(uniqueIndex * randomSeed)
 
     fun build(): CellProperties = CellProperties(
@@ -109,7 +125,8 @@ class CellPropertiesBuilder(
         padding = padding
     )
 
-    private fun cantorPairIndex(i: Int, j: Int): Int  = (i + j) * (i + j + 1) / 2 + j
+    private fun cantorPairIndex(i: Int, j: Int): Int  = ((i + j) * (i + j + 1) / 2 + j) + 1
+    private fun cantorTripleIndex(i: Int, j: Int, k: Int) = cantorPairIndex(cantorPairIndex(i, j), k)
 
     companion object {
         val defaultFigure: BauhausFigure = FigurePack.Smooth.CIRCLE.figure
@@ -135,10 +152,12 @@ fun CellPropertiesBuilder.randomColor(): Color = Color(random.nextInt()).copy(al
 fun CellPropertiesBuilder.randomColor(colors: List<Color>): Color = colors[random.nextInt(colors.size)]
 fun CellPropertiesBuilder.randomDegree(from: Int = -360, until: Int = 360): Float = random.nextInt(from, until).toFloat()
 fun CellPropertiesBuilder.randomBoolean(): Boolean = random.nextBoolean()
-fun CellPropertiesBuilder.withChance(chance: Float): Boolean = chance >= random.nextFloat()
-fun CellPropertiesBuilder.randomFigure() = FigurePack.getRandom(seed = random.nextInt())
+fun <R>CellPropertiesBuilder.withChance(chance: Float, block: (Boolean) -> R) = block(chance >= random.nextFloat())
+fun <R>CellPropertiesBuilder.withChance(chance: Float, blockWin: () -> R, blockLose: () -> R) =
+    if(chance >= random.nextFloat()) blockLose() else blockWin()
+fun CellPropertiesBuilder.randomFigure() = FigurePack.getRandom(random)
 fun CellPropertiesBuilder.randomFigureFrom(
     smooth: Boolean = false,
     sharp: Boolean = false
-) = FigurePack.getRandomFrom(seed = random.nextInt(), smooth = smooth, sharp = sharp)
+) = FigurePack.getRandomFrom(random, smooth = smooth, sharp = sharp)
 

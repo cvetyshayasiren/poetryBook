@@ -1,9 +1,13 @@
 package com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern
 
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.copy
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.withTransform
 import kotlin.jvm.JvmInline
 import kotlin.random.Random
 
@@ -27,20 +31,33 @@ fun BauhausFigure.sizeModifier(scale: Float = 2f): BauhausFigure =
         )
     }.toBauhausFigure()
 
+fun BauhausFigure.turnModifier(count: Int): BauhausFigure =
+    this.path.copy().apply {
+        transform(
+            matrix = Matrix().apply {
+                resetToPivotedTransform(
+                    pivotX = .5f,
+                    pivotY = .5f,
+                    rotationZ = 90f * count
+                )
+            }
+        )
+    }.toBauhausFigure()
+
 class FigurePack {
     companion object {
-        fun getRandom(seed: Int) = getRandomFrom(seed = seed, smooth = true, sharp = true)
+        fun getRandom(random: Random) = getRandomFrom(random = random, smooth = true, sharp = true)
 
         fun getRandomFrom(
-            seed: Int,
+            random: Random,
             smooth: Boolean = false,
             sharp: Boolean = false
         ): BauhausFigure {
             return buildList {
-                if(smooth) { add(Smooth.getRandom(seed)) }
-                if(sharp) { add(Sharp.getRandom(seed)) }
+                if(smooth) { add(Smooth.getRandom(random)) }
+                if(sharp) { add(Sharp.getRandom(random)) }
                 if(!smooth && !sharp) { add(BauhausFigure.EMPTY) }
-            }.random(Random(seed))
+            }.random(random)
         }
     }
 
@@ -56,7 +73,7 @@ class FigurePack {
             }
         );
         companion object {
-            fun getRandom(seed: Int): BauhausFigure = entries.random(Random(seed)).figure
+            fun getRandom(random: Random): BauhausFigure = entries.random(random).figure
         }
     }
 
@@ -71,7 +88,7 @@ class FigurePack {
             }
         );
         companion object {
-            fun getRandom(seed: Int): BauhausFigure = entries.random(Random(seed)).figure
+            fun getRandom(random: Random): BauhausFigure = entries.random(random).figure
         }
     }
 
@@ -80,6 +97,21 @@ class FigurePack {
 
         companion object {
 
+        }
+    }
+}
+
+interface BauFigure {
+    val onDraw: ContentDrawScope.() -> Unit
+
+    class PathFig(): BauFigure {
+        override val onDraw: ContentDrawScope.() -> Unit = {
+            val path = Path().apply { addRect(Rect(0f, 0f, 1f ,1f)) }
+
+            drawPath(
+                path = path,
+                color = Color.Green
+            )
         }
     }
 }

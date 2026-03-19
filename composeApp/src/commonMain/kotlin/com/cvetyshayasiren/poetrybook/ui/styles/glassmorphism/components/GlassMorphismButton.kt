@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.bundle.GlassmorphismAnimationBundle
-import com.materialkolor.ktx.lighten
 
 @Composable
 fun GlassmorphismIconButton(

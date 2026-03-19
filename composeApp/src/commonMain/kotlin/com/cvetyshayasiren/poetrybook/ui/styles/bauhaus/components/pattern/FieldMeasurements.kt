@@ -62,9 +62,12 @@ interface FieldMeasurements {
 
     class Uno(override val alignment: Alignment = Alignment.Center): FieldMeasurements {
         override fun calculate(size: Size): FieldMeasuredMatrix =
-            FieldMeasuredMatrix(
-                cells = listOf(
-                    FieldMeasuredMatrixCell.make(0,0, Rect(center = size.center, radius = size.minDimension))
+            FieldMeasuredMatrix.fromBaseLayer(
+                layer = listOf(
+                    FieldMeasuredCell(
+                        i = 0, j = 0,
+                        rect = Rect(center = size.center, radius = size.minDimension)
+                    )
                 )
             )
     }
@@ -81,21 +84,21 @@ private fun FieldMeasurements.defaultCalculate(
         .align(contentIntSize, size.toIntSize(), LayoutDirection.Ltr)
         .toOffset() + Offset(cellSize / 2, cellSize / 2)
 
-    return buildList<FieldMeasuredMatrixCell> {
-        getCellsList(columns, rows).forEach { (i, j) ->
-            val centerX = offsetX + i * cellSize
-            val centerY = offsetY + j * cellSize
-            add(
-                FieldMeasuredMatrixCell.make(
-                    i, j, Rect(
-                        center = Offset(centerX, centerY),
-                        radius = cellSize / 2
+    return FieldMeasuredMatrix.fromBaseLayer(
+        layer = buildList<FieldMeasuredCell> {
+            getArea(untilI = columns, untilJ = rows).forEach { (i, j) ->
+                val centerX = offsetX + i * cellSize
+                val centerY = offsetY + j * cellSize
+                add(
+                    FieldMeasuredCell(
+                        i, j, Rect(
+                            center = Offset(centerX, centerY),
+                            radius = cellSize / 2
+                        )
                     )
                 )
-            )
+            }
         }
-    }.toFieldMatrix()
+    )
 }
 
-private fun FieldMeasurements.getCellsList(columns: Int, rows: Int) =
-    (0 until rows).flatMap { row -> (0 until columns).map { column -> column to row } }

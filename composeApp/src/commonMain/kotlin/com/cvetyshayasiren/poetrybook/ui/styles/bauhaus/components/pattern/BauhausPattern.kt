@@ -1,11 +1,9 @@
 package com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
-import androidx.compose.ui.node.invalidateDraw
 
 fun Modifier.bauhausPattern(state: BauhausPatternState) = this then BauhausPatternElement(state)
 

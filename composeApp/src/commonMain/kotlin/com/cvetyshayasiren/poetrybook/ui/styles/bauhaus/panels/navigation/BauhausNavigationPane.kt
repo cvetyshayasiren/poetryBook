@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Replay
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.window.core.layout.WindowSizeClass
 import com.cvetyshayasiren.poetrybook.di.di
-import com.cvetyshayasiren.poetrybook.domain.models.style.IsmStyle
 import com.cvetyshayasiren.poetrybook.ui.navigation.Destination
 import com.cvetyshayasiren.poetrybook.ui.navigation.isExpanded
 import com.cvetyshayasiren.poetrybook.ui.navigation.isPage
@@ -34,12 +32,7 @@ import com.cvetyshayasiren.poetrybook.ui.store.PageStoreIntent
 import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.BauhausConfig
 import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.bundle.BauhausAnimationBundle
 import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.BauhausIconButton
-import com.cvetyshayasiren.poetrybook.ui.styles.glassmorphism.components.GlassmorphismIconButton
-import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.NeumorphismConfig
-import com.cvetyshayasiren.poetrybook.ui.styles.neumorphism.bundle.NeumorphismAnimationBundle
-import com.cvetyshayasiren.poetrybook.ui.utils.plugmorphism.PlugNavigationPane
 import org.kodein.di.instance
-import kotlin.getValue
 
 @Composable
 fun BauhausNavigationPane(modifier: Modifier = Modifier) {

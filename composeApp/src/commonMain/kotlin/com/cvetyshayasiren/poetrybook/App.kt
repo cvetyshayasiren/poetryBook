@@ -17,21 +17,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.CellsMatrix
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.FieldCalculations
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.FieldMeasurements
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.FigurePack
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.bauhausPattern
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.randomFigure
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.randomColor
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.randomDegree
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.randomFigureFrom
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.rememberBauhausPatternState
-import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.sizeModifier
+import com.cvetyshayasiren.poetrybook.ui.styles.bauhaus.components.pattern.*
 import com.cvetyshayasiren.poetrybook.ui.theme.PoetryBookTheme
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -47,23 +38,23 @@ fun App() {
 
 @Composable
 fun TestPattern() {
-    val colors =
-        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.tertiary)
+    val colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.error)
+    val colors2 = listOf(MaterialTheme.colorScheme.tertiary, MaterialTheme.colorScheme.onSecondaryFixedVariant)
 
     val animatable = remember { Animatable(0f) }
 
     val state = rememberBauhausPatternState(
         fieldCalculations = FieldCalculations(
-            fieldMeasurements = FieldMeasurements.Columns(5)
+            fieldMeasurements = FieldMeasurements.Columns(8)
         ) {
-//            test()
+            setLayer(0, layer().slice(4, FieldFigure.VERTICAL))
         },
-        cellsMatrix = CellsMatrix.Animated(animatable = animatable) { i, j, progress ->
-            figure = randomFigure().sizeModifier()
-            rotation = lerp(randomDegree(), randomDegree(), progress)
-            scale = lerp(.2f, 1f, progress)
-            color = lerp(randomColor(colors), randomColor(colors), progress)
-            style = Fill
+        cellsMatrix = CellsMatrix.Animated(animatable = animatable) { cell, progress ->
+            figure = FigurePack.Sharp.SQUARE.figure
+            scale = lerp(1f, .8f, progress)
+            color = randomColor(colors)
+            style = withChance(.2f) { if(it) Fill else Stroke(width = 4f, cap = StrokeCap.Round) }
+            rotation = lerp(randomDegree(), 0f, progress)
             padding = 4.dp
         },
     )
@@ -101,6 +92,7 @@ fun TestPattern() {
         ) {
             Text("RANDOMISE SEED")
         }
-        Text("TEST PATTERN")
+
+        Text(text = "TEST PATTERN", color = Color.Black)
     }
 }
