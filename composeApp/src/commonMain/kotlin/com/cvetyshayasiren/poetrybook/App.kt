@@ -50,10 +50,8 @@ fun TestPattern() {
             setLayer(0, layer().slice(4, FieldFigure.VERTICAL))
         },
         cellsMatrix = CellsMatrix.Animated(animatable = animatable) { cell, progress ->
-            figure = FigurePack.Sharp.SQUARE.figure
+            figure = FigurePack.getRandom(random)
             scale = lerp(1f, .8f, progress)
-            color = randomColor(colors)
-            style = withChance(.2f) { if(it) Fill else Stroke(width = 4f, cap = StrokeCap.Round) }
             rotation = lerp(randomDegree(), 0f, progress)
             padding = 4.dp
         },

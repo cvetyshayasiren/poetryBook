@@ -23,30 +23,9 @@ data class CellProperties(
     val scaleX: Float = CellPropertiesBuilder.defaultScaleX,
     val scaleY: Float = CellPropertiesBuilder.defaultScaleY,
     val rotation: Float = CellPropertiesBuilder.defaultRotation,
-    val color: Color = CellPropertiesBuilder.defaultColor,
-    val style: DrawStyle = CellPropertiesBuilder.defaultStyle,
-    val colorFilter: ColorFilter? = CellPropertiesBuilder.defaultColorFilter,
-    val blendMode: BlendMode = CellPropertiesBuilder.defaultBlendMode,
     val padding: Dp? = CellPropertiesBuilder.defaultPadding
 ) {
     companion object
-
-    fun test(rect: Rect, drawScope: ContentDrawScope) {
-        val matrix = Matrix().apply {
-            resetToPivotedTransform(
-                pivotX = pivotX,
-                pivotY = pivotY,
-            )
-        }
-
-        val fig = BauFigure.PathFig()
-
-        drawScope.withTransform(
-            transformBlock = { transform(matrix) }
-        ) {
-            fig.onDraw.invoke(drawScope)
-        }
-    }
 
     fun draw(rect: Rect, drawScope: ContentDrawScope) = drawScope.apply {
         val matrix = Matrix().apply {
@@ -71,13 +50,11 @@ data class CellProperties(
             }
         }
 
-        drawPath(
-            path = figure.path.copy().apply { transform(matrix) },
-            color = color,
-            style = style,
-            colorFilter = colorFilter,
-            blendMode = blendMode
-        )
+        drawScope.withTransform(
+            transformBlock = { transform(matrix) }
+        ) {
+            figure.onDraw.invoke(drawScope)
+        }
     }
 }
 
@@ -97,10 +74,6 @@ class CellPropertiesBuilder(
     var scaleX: Float = defaultScaleX,
     var scaleY: Float = defaultScaleY,
     var rotation: Float = defaultRotation,
-    var color: Color = defaultColor,
-    var style: DrawStyle = defaultStyle,
-    var colorFilter: ColorFilter? = defaultColorFilter,
-    var blendMode: BlendMode = defaultBlendMode,
     var padding: Dp? = defaultPadding,
 ) {
     val uniqueIndex = cantorTripleIndex(i,j,layer)
@@ -118,10 +91,6 @@ class CellPropertiesBuilder(
         scaleX = scaleX,
         scaleY = scaleY,
         rotation = rotation,
-        color = color,
-        style = style,
-        colorFilter = colorFilter,
-        blendMode = blendMode,
         padding = padding
     )
 
@@ -140,10 +109,6 @@ class CellPropertiesBuilder(
         val defaultScaleX: Float = 1f
         val defaultScaleY: Float = 1f
         val defaultRotation: Float = 0f
-        val defaultColor: Color = Color.Unspecified
-        val defaultStyle: DrawStyle = Fill
-        val defaultColorFilter: ColorFilter? = null
-        val defaultBlendMode: BlendMode = DefaultBlendMode
         val defaultPadding: Dp? = null
     }
 }
